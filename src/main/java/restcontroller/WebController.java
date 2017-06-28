@@ -35,7 +35,7 @@ public class WebController {
     public String UploadFile(
             @RequestParam("url") String url,
             HttpServletRequest request, HttpSession session) {
-        session.setAttribute("url", url+"/UploadFile");
+        session.setAttribute("url", url+"/UpdateCheckSsh");
         return "UploadFile";
     }
 
