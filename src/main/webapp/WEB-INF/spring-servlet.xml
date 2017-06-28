@@ -20,12 +20,27 @@
                 http://www.springframework.org/schema/mvc 
                 http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd"
                 
-   >
+>
 
     
     <context:component-scan base-package="restcontroller"></context:component-scan>
-
+    <mvc:resources mapping="/webjars/**" location="classpath:META-INF/resources/webjars/" />
+     <mvc:resources mapping="/css/**" location="/resources/css/"/>
+    <mvc:resources mapping="/js/**" location="/resources/js/"/>
+    <mvc:resources mapping="/fonts/**" location="/resources/fonts/"/>
+    <!--khai báo viewresolver để xử lý view===============================================================================================-->
    
+    <bean id="jspViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/"/>
+        <property name="suffix" value=".jsp"/>
+      
+    </bean>
+    
+    <!--upload file-->
+    <mvc:default-servlet-handler/>
+    <bean id="multipartResolver"
+          class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+    </bean>
 
     <context:annotation-config/>
     <mvc:annotation-driven />

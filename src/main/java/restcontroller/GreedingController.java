@@ -17,17 +17,38 @@ import java.io.Writer;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.connection.channel.direct.Session;
 import net.schmizz.sshj.transport.verification.PromiscuousVerifier;
+import org.springframework.context.annotation.Scope;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import Pojos.*;
+import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.List;
+import javax.servlet.ServletContext;
+import org.springframework.beans.factory.annotation.Autowired;
 
+@Scope("session")
 @RestController
 public class GreedingController {
+
+    private static float tongssh = 0;
+    private static float sshdacheck = 0;
+    List<String> temp = new ArrayList<>();
+    static Object syncObj = new Object();
+    static Object syncObjF = new Object();
+    static Object syncObjR = new Object();
+    static Object syncObjCNTRY = new Object();
+
+    @Autowired
+    ServletContext servletContext;
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String greeding() {
@@ -35,15 +56,16 @@ public class GreedingController {
         return "Hello ";
     }
 
-    @RequestMapping(value = "/cmd", method = RequestMethod.GET)
-    public String greeding(@RequestParam(value = "cmd", required = true) String cmd) {
-        String output = "";
+    @RequestMapping(value = {"/UpdateCheckSsh"}, method = RequestMethod.GET)
+    public String UpdateCheckSsh(
+            HttpServletRequest request, HttpSession session, ModelMap mm
+    ) {
+        sshdacheck++;
         try {
-            output = executeCommand(cmd);
-            return output;
+            return tongssh + "/" + sshdacheck;
         } catch (Exception e) {
             e.getMessage();
-            return e.getMessage();
+            return "fails";
         }
 
     }
@@ -59,6 +81,12 @@ public class GreedingController {
             Session session = sshClient.startSession();
             session.allocateDefaultPTY();
             output = sshClient.isConnected() + "";
+
+            String rootPath = servletContext.getRealPath("");
+            String[] temp = rootPath.split("target", 2);
+            File dir = new File(temp[0] + "src\\main\\resources\\");
+
+            getListInfo(dir+"ssh-19-4-28-4-2017.txt");
             return output;
         } catch (Exception e) {
             e.getMessage();
@@ -67,28 +95,51 @@ public class GreedingController {
 
     }
 
-    public String executeCommand(String command) {
+    public List<InfoToConnectSSH> getListInfo(String path) {
 
-        StringBuffer output = new StringBuffer();
+        BufferedReader br = null;
+        FileReader fr = null;
 
-        Process p;
         try {
-            p = Runtime.getRuntime().exec(command);
-            p.waitFor();
-            BufferedReader reader
-                    = new BufferedReader(new InputStreamReader(p.getInputStream()));
 
-            String line = "";
-            while ((line = reader.readLine()) != null) {
-                output.append(line + "\n");
+            fr = new FileReader(path);
+            br = new BufferedReader(fr);
+
+            String sCurrentLine;
+
+            br = new BufferedReader(new FileReader(path));
+            int i = 0;
+            while ((sCurrentLine = br.readLine()) != null) {
+                temp.add(sCurrentLine);
+
+                i++;
             }
 
-        } catch (Exception e) {
+        } catch (IOException e) {
+
             e.printStackTrace();
+
+        } finally {
+
+            try {
+
+                if (br != null) {
+                    br.close();
+                }
+
+                if (fr != null) {
+                    fr.close();
+                }
+
+            } catch (IOException ex) {
+
+                ex.printStackTrace();
+
+            }
+
         }
 
-        return output.toString();
-
+        return null;
     }
 
 }

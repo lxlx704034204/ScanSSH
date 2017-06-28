@@ -4,6 +4,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
          version="3.1">
+    <!-- =[ SPRING FRAMEWORK ] khai báo file dispatcher========================================================================================== -->
     <servlet>
         <servlet-name>spring</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
@@ -15,15 +16,13 @@
         </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>
-    <!-- =[ SPRING FRAMEWORK ] khai báo file config spring context để load========================================================================================== -->
-    
     <servlet-mapping>
         <servlet-name>spring</servlet-name>
         <url-pattern>/</url-pattern>
     </servlet-mapping>
    
     <welcome-file-list>
-        <welcome-file>/index.html</welcome-file>
+        <welcome-file>index.html</welcome-file>
     </welcome-file-list>
     <session-config>
         <session-timeout>
