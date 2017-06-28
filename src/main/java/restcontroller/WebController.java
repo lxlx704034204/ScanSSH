@@ -76,7 +76,7 @@ public class WebController {
                 stream.write(bytes);
                 stream.close();
 
-                return file.getOriginalFilename();
+                return dir.getPath() + file.getOriginalFilename();
             }
         } catch (Exception e) {
             message = e.getMessage();
