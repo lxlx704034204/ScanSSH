@@ -83,8 +83,8 @@ public class GreedingController {
             output = sshClient.isConnected() + "";
 
             String rootPath = servletContext.getRealPath("");
-            File dir = new File(rootPath + File.separator + "tmpFiles");
-            
+            File dir = new File(rootPath + File.separator + "resources");
+
             getListInfo(dir.getPath() + "\\ssh-19-4-28-4-2017.txt");
             return output;
         } catch (Exception e) {

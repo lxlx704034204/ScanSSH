@@ -35,7 +35,7 @@ public class WebController {
     public String UploadFile(
             @RequestParam("url") String url,
             HttpServletRequest request, HttpSession session) {
-        session.setAttribute("url", url+"/UpdateCheckSsh");
+        session.setAttribute("url", url + "/UpdateCheckSsh");
         return "UploadFile";
     }
 
@@ -44,31 +44,29 @@ public class WebController {
             HttpServletRequest request, HttpSession session, ModelMap mm,
             @RequestParam("file") MultipartFile file
     ) {
+        String message = "";
         try {
-            uploadFile(file);
-            mm.addAttribute("message", "thanh cong");
+            message = uploadFile(file);
+            mm.addAttribute("message", message);
         } catch (Exception e) {
-            mm.addAttribute("message", "that bai");
+            mm.addAttribute("message", message);
             e.getMessage();
         }
         return "UploadFile";
     }
 
     public String uploadFile(MultipartFile file) throws IOException {
-
+        String message = "";
         try {
             if (!file.isEmpty()) {
-                //String realpath = servletContext.getRealPath("");
-                //String[] temp = realpath.split("target", 2);
+                //String rootPath = servletContext.getRealPath("");
+                // String[] temp = rootPath.split("target", 2);
                 //File destination = new File(temp[0] + "src\\main\\resources\\" + file.getOriginalFilename()); // something like C:/Users/tom/Documents/nameBasedOnSomeId.png
                 byte[] bytes = file.getBytes();
 
-                // Creating the directory to store file
+                //Creating the directory to store file
                 String rootPath = servletContext.getRealPath("");
-                File dir = new File(rootPath + File.separator + "tmpFiles");
-                if (!dir.exists()) {
-                    dir.mkdirs();
-                }
+                File dir = new File(rootPath + File.separator + "resources");
 
                 // Create the file on server
                 File serverFile = new File(dir.getAbsolutePath()
@@ -81,11 +79,9 @@ public class WebController {
                 return file.getOriginalFilename();
             }
         } catch (Exception e) {
-            e.getMessage();
+            message = e.getMessage();
         }
-
-        return null;
-
+        return message;
     }
 
 }
