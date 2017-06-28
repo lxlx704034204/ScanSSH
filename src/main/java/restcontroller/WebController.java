@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -39,14 +40,15 @@ public class WebController {
         return "UploadFile";
     }
 
-    @RequestMapping(value = {"/UploadFile"}, method = RequestMethod.POST)
+    @RequestMapping(value = {"/UploadFile/{path}"}, method = RequestMethod.POST)
     public String UploadFile(
             HttpServletRequest request, HttpSession session, ModelMap mm,
-            @RequestParam("file") MultipartFile file
+            @RequestParam("file") MultipartFile file,
+            @PathVariable String path
     ) {
         String message = "";
         try {
-            message = uploadFile(file);
+            message = uploadFile(file,path);
             mm.addAttribute("message", message);
         } catch (Exception e) {
             mm.addAttribute("message", message);
@@ -55,7 +57,7 @@ public class WebController {
         return "UploadFile";
     }
 
-    public String uploadFile(MultipartFile file) throws IOException {
+    public String uploadFile(MultipartFile file,String path) throws IOException {
         String message = "";
         try {
             if (!file.isEmpty()) {
@@ -65,9 +67,9 @@ public class WebController {
                 byte[] bytes = file.getBytes();
 
                 //Creating the directory to store file
-                String rootPath = servletContext.getRealPath("");
+                //String rootPath = servletContext.getRealPath("");
                 //File dir = new File(rootPath + File.separator + "resources");
-                File dir = new File("/app/target/");
+                File dir = new File(path);
 
                 // /app/target dir on server
                 
