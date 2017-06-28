@@ -40,15 +40,15 @@ public class WebController {
         return "UploadFile";
     }
 
-    @RequestMapping(value = {"/UploadFile/{path}"}, method = RequestMethod.POST)
+    @RequestMapping(value = {"/UploadFile"}, method = RequestMethod.POST)
     public String UploadFile(
             HttpServletRequest request, HttpSession session, ModelMap mm,
             @RequestParam("file") MultipartFile file,
-            @PathVariable String path
+            @RequestParam("path") String path
     ) {
         String message = "";
         try {
-            message = uploadFile(file,path);
+            message = uploadFile(file, path);
             mm.addAttribute("message", message);
         } catch (Exception e) {
             mm.addAttribute("message", message);
@@ -57,7 +57,7 @@ public class WebController {
         return "UploadFile";
     }
 
-    public String uploadFile(MultipartFile file,String path) throws IOException {
+    public String uploadFile(MultipartFile file, String path) throws IOException {
         String message = "";
         try {
             if (!file.isEmpty()) {
@@ -72,7 +72,6 @@ public class WebController {
                 File dir = new File(path);
 
                 // /app/target dir on server
-                
                 // Create the file on server
                 File serverFile = new File(dir.getAbsolutePath()
                         + File.separator + file.getOriginalFilename());

@@ -36,6 +36,12 @@
                             <input type="file" name="file" />
                         </div>
                     </div>
+                    <div class="box-body">
+                        <div class="form-group">
+                            <label>path</label>
+                            <input type="text" name="path"  />
+                        </div>
+                    </div>
                     <div class="box-footer clearfix">
 
                         <button type="submit">gui</button>
