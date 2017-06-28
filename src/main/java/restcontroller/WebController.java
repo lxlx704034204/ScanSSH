@@ -67,7 +67,7 @@ public class WebController {
                 //Creating the directory to store file
                 String rootPath = servletContext.getRealPath("");
                 //File dir = new File(rootPath + File.separator + "resources");
-                File dir = new File("/app/target");
+                File dir = new File("/app/target/");
 
                 // /app/target dir on server
                 
