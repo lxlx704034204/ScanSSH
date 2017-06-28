@@ -31,16 +31,11 @@ public class WebController {
     @Autowired
     ServletContext servletContext;
 
-
-    
-
     @RequestMapping(value = {"/UploadFile"}, method = RequestMethod.GET)
-    public String UploadFile(HttpServletRequest request ,HttpSession session) {
-        StringBuffer urltemp = request.getRequestURL();
-        String[] temp = urltemp.toString().split("UploadFile", 2);
-
-        String url = temp[0] + "UpdateCheckSsh";
-        session.setAttribute("url", url);
+    public String UploadFile(
+            @RequestParam("url") String url,
+            HttpServletRequest request, HttpSession session) {
+        session.setAttribute("url", url+"/UploadFile");
         return "UploadFile";
     }
 
@@ -59,8 +54,6 @@ public class WebController {
         return "UploadFile";
     }
 
-    
-
     public String uploadFile(MultipartFile file) throws IOException {
 
         try {
@@ -72,8 +65,10 @@ public class WebController {
 
                 // Creating the directory to store file
                 String rootPath = servletContext.getRealPath("");
-                String[] temp = rootPath.split("target", 2);
-                File dir = new File(temp[0] + "src\\main\\resources\\");
+                File dir = new File(rootPath + File.separator + "tmpFiles");
+                if (!dir.exists()) {
+                    dir.mkdirs();
+                }
 
                 // Create the file on server
                 File serverFile = new File(dir.getAbsolutePath()
