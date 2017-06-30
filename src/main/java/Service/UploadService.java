@@ -62,7 +62,7 @@ public class UploadService {
         return message;
     }
 
-    public String uploadFile(MultipartFile file, String path) throws IOException {
+    public String uploadFileLocal(MultipartFile file, String path) throws IOException {
         String message = "";
         try {
             if (!file.isEmpty()) {
@@ -95,37 +95,4 @@ public class UploadService {
         return tmpFile;
     }
 
-    public List<String> getListFileOnFtpServer(String FtpServerName, String Username, String Password) throws IOException {
-        FTPClient client = new FTPClient();
-        List<String> lists = new ArrayList<>();
-        try {
-            client.connect(FtpServerName);
-            client.login(Username, Password);
-            FTPFile[] listsFile = getFileFtpServer(client);
-            client.disconnect();
-            if (listsFile != null) {
-                for (int i = 0; i < listsFile.length; i++) {
-                    lists.add(listsFile[i].getName());
-                }
-                return lists;
-            } else {
-                return null;
-            }
-
-        } catch (Exception e) {
-            e.getMessage();
-            client.disconnect();
-        }
-        return null;
-    }
-
-    public FTPFile[] getFileFtpServer(FTPClient ftpClient) throws IOException, IOException {
-        try {
-            FTPFile[] result = ftpClient.listFiles();
-            return result;
-        } catch (Exception e) {
-            e.getMessage();
-        }
-        return null;
-    }
 }

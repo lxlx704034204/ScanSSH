@@ -2,6 +2,7 @@ package restcontroller;
 
 import Business.ScanSSH;
 import Pojos.RangeIp;
+import Service.GetInfoService;
 import Service.IPService;
 import Service.ReadService;
 import java.util.ArrayList;
@@ -21,6 +22,8 @@ public class TestController {
     ReadService readService;
     @Autowired
     ScanSSH scanSSH;
+    @Autowired
+    GetInfoService getInfoService;
 
     @RequestMapping(value = "/test", method = RequestMethod.GET)
     public String test(
@@ -29,14 +32,12 @@ public class TestController {
         try {
             List<String> range = new ArrayList<>();
             range.add("118.69.60.253-118.69.60.254");
-            
-            
+
             //get file range
             scanSSH.setListsRange(range);
-            scanSSH.setListsUserPass(readService.getListUserPass(readService.readFileFromFtpServer("ftp.lisatthu.heliohost.org", "lisatthu35@lisatthu.heliohost.org", "lisatthu35", name)));
+            scanSSH.setListsUserPass(getInfoService.getListUserPass(readService.readFileFromFtpServer("ftp.lisatthu.heliohost.org", "lisatthu35@lisatthu.heliohost.org", "lisatthu35", name)));
             scanSSH.setNumberOfThreads(1);
             scanSSH.StartSetting();
-            
 
             int a = 0;
         } catch (Exception e) {

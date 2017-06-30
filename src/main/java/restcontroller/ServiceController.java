@@ -38,7 +38,7 @@ import java.util.List;
 import javax.servlet.ServletContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
-@Scope("session")
+
 @RestController
 public class ServiceController {
 
@@ -82,14 +82,13 @@ public class ServiceController {
         try {
             SSHClient sshClient = new SSHClient();
             sshClient.addHostKeyVerifier(new PromiscuousVerifier());
-            sshClient.connect("210.211.99.207");
             sshClient.setTimeout(30000);
+            sshClient.connect("210.211.99.207");
 
             sshClient.authPassword("admin", "123456");
             Session session = sshClient.startSession();
             session.allocateDefaultPTY();
             output = sshClient.isConnected() + "";
-
 
             return output;
         } catch (Exception e) {

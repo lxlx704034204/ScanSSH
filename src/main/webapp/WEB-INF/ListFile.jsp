@@ -22,15 +22,16 @@
     </head>
     <body>
         <h1>List file</h1>
-        <table id="example2" class="table table-bordered table-hover">
-            <thead>
-                <tr>
-                    <th>Kiểu</th>
-                    <th>Tên File</th>
+        <c:if test="${not empty message}"> ${message}</c:if>
+            <table id="example2" class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Kiểu</th>
+                        <th>Tên File</th>
 
-                </tr>
-            </thead>
-            <tbody>
+                    </tr>
+                </thead>
+                <tbody>
 
                 <c:forEach var="listsFile" items="${listsFile}" varStatus="status">
                     <c:set value="${status.index}" var="index"/>

@@ -23,7 +23,7 @@
     <body>
         <h1>Check info</h1>
         <s:url value="getListInfo" var="getListInfo"/>
-
+        <c:if test="${not empty message}"> ${message}</c:if>
         <form:form method="POST" action="${getListInfo}">
             <div class="col-xs-12">
                 <div class="box box-warning">

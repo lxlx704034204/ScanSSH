@@ -6,6 +6,7 @@
 package restcontroller;
 
 import Pojos.InfoToConnectSSH;
+import Service.GetInfoService;
 import Service.ReadService;
 import Service.UploadService;
 import java.awt.image.BufferedImage;
@@ -40,6 +41,8 @@ public class WebController {
     UploadService uploadService;
     @Autowired
     ReadService readService;
+    @Autowired
+    GetInfoService getInfoService;
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String greeding() {
@@ -72,15 +75,16 @@ public class WebController {
 
     @RequestMapping(value = "/getListFile", method = RequestMethod.GET)
     public String getListFile(ModelMap mm) {
-
+        String message = "";
         try {
             //List<InfoToConnectSSH> list1 = readService.getListInfoToConnectSSH(readService.readFileFromFtpServer("ftp.lisatthu.heliohost.org", "lisatthu35@lisatthu.heliohost.org", "lisatthu35", "Touch.txt"));
-            List<String> lists = uploadService.getListFileOnFtpServer("ftp.lisatthu.heliohost.org", "lisatthu35@lisatthu.heliohost.org", "lisatthu35");
+            List<String> lists = getInfoService.getListFileOnFtpServer("ftp.lisatthu.heliohost.org", "lisatthu35@lisatthu.heliohost.org", "lisatthu35");
             mm.addAttribute("listsFile", lists);
 
         } catch (Exception e) {
-            e.getMessage();
+            message = e.getMessage();
         }
+        mm.addAttribute("message", message);
         return "ListFile";
     }
 
@@ -93,15 +97,17 @@ public class WebController {
     @RequestMapping(value = "/getListInfo", method = RequestMethod.POST)
     public String getListInfo2(ModelMap mm,
             @RequestParam(value = "name") String name) {
+        String message = "";
 
         try {
-            List<InfoToConnectSSH> lists = readService.getListInfoToConnectSSH(readService.readFileFromFtpServer("ftp.lisatthu.heliohost.org", "lisatthu35@lisatthu.heliohost.org", "lisatthu35", name));
+            List<InfoToConnectSSH> lists = getInfoService.getListInfoToConnectSSH(readService.readFileFromFtpServer("ftp.lisatthu.heliohost.org", "lisatthu35@lisatthu.heliohost.org", "lisatthu35", name));
 
             mm.addAttribute("listsInfo", lists);
 
         } catch (Exception e) {
-            e.getMessage();
+            message = e.getMessage();
         }
+        mm.addAttribute("message", message);
         return "ListInfo";
     }
 

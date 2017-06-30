@@ -51,58 +51,8 @@ public class ReadService {
         return null;
     }
 
-    public List<InfoToConnectSSH> getListInfoToConnectSSH(List<String> ListsInfo) {
 
-        List<InfoToConnectSSH> lists = new ArrayList<>();
-        try {
-            for (int i = 0; i < ListsInfo.size(); i++) {
-                if (!ListsInfo.get(i).equals("") && !ListsInfo.get(i).equals(" ")) {
-                    InfoToConnectSSH info = new InfoToConnectSSH();
-                    String[] temp = ListsInfo.get(i).split("\\|");
-                    if (temp.length >= 3) {
-                        info.setHost(temp[0]);
-                        info.setUsername(temp[1]);
-                        info.setPassword(temp[2]);
-                        if (temp.length >= 4) {
-                            info.setCountry(temp[3]);
-                        }
-
-                        lists.add(info);
-                    }
-
-                }
-
-            }
-            return lists;
-        } catch (Exception e) {
-            e.getMessage();
-        }
-        return null;
-    }
     
-     public List<InfoToConnectSSH> getListUserPass(List<String> ListsInfo) {
 
-        List<InfoToConnectSSH> lists = new ArrayList<>();
-        try {
-            for (int i = 0; i < ListsInfo.size(); i++) {
-                if (!ListsInfo.get(i).equals("") && !ListsInfo.get(i).equals(" ")) {
-                    InfoToConnectSSH info = new InfoToConnectSSH();
-                    String[] temp = ListsInfo.get(i).split("\\|");
-                    if (temp.length >= 2) {
-                        info.setUsername(temp[0]);
-                        info.setPassword(temp[1]);
-
-                        lists.add(info);
-                    }
-
-                }
-
-            }
-            return lists;
-        } catch (Exception e) {
-            e.getMessage();
-        }
-        return null;
-    }
 
 }
