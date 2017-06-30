@@ -90,11 +90,7 @@ public class ServiceController {
             session.allocateDefaultPTY();
             output = sshClient.isConnected() + "";
 
-            //String rootPath = servletContext.getRealPath("");
-            //File dir = new File(rootPath + File.separator + "resources");
-            File dir = new File("/app/target");
 
-            getListInfo(dir.getPath() + "\\ssh-19-4-28-4-2017.txt");
             return output;
         } catch (Exception e) {
             e.getMessage();
