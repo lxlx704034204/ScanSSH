@@ -5,6 +5,7 @@
  */
 package restcontroller;
 
+import Business.ScanSSH;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -29,6 +30,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import Pojos.*;
+import Service.ReadService;
+import Service.UploadService;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,32 +40,35 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 @Scope("session")
 @RestController
-public class GreedingController {
+public class ServiceController {
+
+    List<String> temp = new ArrayList<>();
 
     private static float tongssh = 0;
     private static float sshdacheck = 0;
-    List<String> temp = new ArrayList<>();
-    static Object syncObj = new Object();
-    static Object syncObjF = new Object();
-    static Object syncObjR = new Object();
-    static Object syncObjCNTRY = new Object();
-
+    private static String ip = "";
     @Autowired
     ServletContext servletContext;
-
-    @RequestMapping(value = "/", method = RequestMethod.GET)
-    public String greeding() {
-
-        return "Hello ";
-    }
+    @Autowired
+    UploadService uploadService;
+    @Autowired
+    ReadService readService;
+    @Autowired
+    ScanSSH scanSSH;
 
     @RequestMapping(value = {"/UpdateCheckSsh"}, method = RequestMethod.GET)
-    public String UpdateCheckSsh(
-            HttpServletRequest request, HttpSession session, ModelMap mm
-    ) {
-        sshdacheck++;
+    public String UpdateCheckSsh2() {
+
+        tongssh = scanSSH.getTotalIps();
+        sshdacheck = scanSSH.getTotalIpsChecked();
+
+        if (scanSSH.getListsResultIps() != null && scanSSH.getListsResultIps().size() > 0) {
+            ip = scanSSH.getListsResultIps().get(0).getHost();
+
+        }
+
         try {
-            return tongssh + "/" + sshdacheck;
+            return sshdacheck + "/" + tongssh + "/" + ip;
         } catch (Exception e) {
             e.getMessage();
             return "fails";
@@ -76,7 +82,9 @@ public class GreedingController {
         try {
             SSHClient sshClient = new SSHClient();
             sshClient.addHostKeyVerifier(new PromiscuousVerifier());
-            sshClient.connect("210.211.99.203");
+            sshClient.connect("210.211.99.207");
+            sshClient.setTimeout(30000);
+
             sshClient.authPassword("admin", "123456");
             Session session = sshClient.startSession();
             session.allocateDefaultPTY();

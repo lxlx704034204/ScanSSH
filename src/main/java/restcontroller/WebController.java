@@ -5,12 +5,16 @@
  */
 package restcontroller;
 
+import Pojos.InfoToConnectSSH;
+import Service.ReadService;
+import Service.UploadService;
 import java.awt.image.BufferedImage;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
 import javax.imageio.ImageIO;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -32,24 +36,33 @@ public class WebController {
     @Autowired
     ServletContext servletContext;
 
+    @Autowired
+    UploadService uploadService;
+    @Autowired
+    ReadService readService;
+
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    public String greeding() {
+
+        return "index";
+    }
+
     @RequestMapping(value = {"/UploadFile"}, method = RequestMethod.GET)
     public String UploadFile(
-            @RequestParam("url") String url,
             HttpServletRequest request, HttpSession session) {
-        session.setAttribute("url", url + "/UpdateCheckSsh");
+
         return "UploadFile";
     }
 
     @RequestMapping(value = {"/UploadFile"}, method = RequestMethod.POST)
     public String UploadFile(
             HttpServletRequest request, HttpSession session, ModelMap mm,
-            @RequestParam("file") MultipartFile file,
-            @RequestParam("path") String path
+            @RequestParam("file") MultipartFile file
     ) {
         String message = "";
         try {
-            message = uploadFile(file, path);
-            mm.addAttribute("message", message);
+            message = uploadService.uploadToFtpServer("ftp.lisatthu.heliohost.org", "lisatthu35@lisatthu.heliohost.org", "lisatthu35", file);
+            mm.addAttribute("message", "upload thanh cong");
         } catch (Exception e) {
             mm.addAttribute("message", message);
             e.getMessage();
@@ -57,35 +70,48 @@ public class WebController {
         return "UploadFile";
     }
 
-    public String uploadFile(MultipartFile file, String path) throws IOException {
-        String message = "";
+    @RequestMapping(value = "/getListFile", method = RequestMethod.GET)
+    public String getListFile(ModelMap mm) {
+
         try {
-            if (!file.isEmpty()) {
-                //String rootPath = servletContext.getRealPath("");
-                // String[] temp = rootPath.split("target", 2);
-                //File destination = new File(temp[0] + "src\\main\\resources\\" + file.getOriginalFilename()); // something like C:/Users/tom/Documents/nameBasedOnSomeId.png
-                byte[] bytes = file.getBytes();
+            //List<InfoToConnectSSH> list1 = readService.getListInfoToConnectSSH(readService.readFileFromFtpServer("ftp.lisatthu.heliohost.org", "lisatthu35@lisatthu.heliohost.org", "lisatthu35", "Touch.txt"));
+            List<String> lists = uploadService.getListFileOnFtpServer("ftp.lisatthu.heliohost.org", "lisatthu35@lisatthu.heliohost.org", "lisatthu35");
+            mm.addAttribute("listsFile", lists);
 
-                //Creating the directory to store file
-                //String rootPath = servletContext.getRealPath("");
-                //File dir = new File(rootPath + File.separator + "resources");
-                File dir = new File(path);
-
-                // /app/target dir on server
-                // Create the file on server
-                File serverFile = new File(dir.getAbsolutePath()
-                        + File.separator + file.getOriginalFilename());
-                BufferedOutputStream stream = new BufferedOutputStream(
-                        new FileOutputStream(serverFile));
-                stream.write(bytes);
-                stream.close();
-
-                return dir.getPath() + file.getOriginalFilename();
-            }
         } catch (Exception e) {
-            message = e.getMessage();
+            e.getMessage();
         }
-        return message;
+        return "ListFile";
+    }
+
+    @RequestMapping(value = "/getListInfo", method = RequestMethod.GET)
+    public String getListInfo1() {
+
+        return "ListInfo";
+    }
+
+    @RequestMapping(value = "/getListInfo", method = RequestMethod.POST)
+    public String getListInfo2(ModelMap mm,
+            @RequestParam(value = "name") String name) {
+
+        try {
+            List<InfoToConnectSSH> lists = readService.getListInfoToConnectSSH(readService.readFileFromFtpServer("ftp.lisatthu.heliohost.org", "lisatthu35@lisatthu.heliohost.org", "lisatthu35", name));
+
+            mm.addAttribute("listsInfo", lists);
+
+        } catch (Exception e) {
+            e.getMessage();
+        }
+        return "ListInfo";
+    }
+
+    @RequestMapping(value = {"/CheckSsh"}, method = RequestMethod.GET)
+    public String UpdateCheckSsh1(
+            @RequestParam("url") String url,
+            HttpServletRequest request, HttpSession session, ModelMap mm
+    ) {
+        session.setAttribute("url", url + "/UpdateCheckSsh");
+        return "UploadFile";
     }
 
 }

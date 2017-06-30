@@ -28,18 +28,11 @@
             <div class="col-xs-12">
                 <div class="box box-warning">
                     <div class="box-header with-border">
-                        <h3 class="box-title">Thêm Sản phẩm mới</h3>
                     </div>
                     <div class="box-body">
                         <div class="form-group">
                             <label>File</label>
                             <input type="file" name="file" />
-                        </div>
-                    </div>
-                    <div class="box-body">
-                        <div class="form-group">
-                            <label>path</label>
-                            <input type="text" name="path"  />
                         </div>
                     </div>
                     <div class="box-footer clearfix">
@@ -50,6 +43,33 @@
                     </div>
                 </div>
         </form:form>
+
+        <br/> <br/> <br/> <br/>
+        <h1>Check ssh</h1>
+        <s:url value="CheckSsh" var="CheckSsh"/>
+
+        <form:form method="GET" action="${CheckSsh}">
+            <div class="col-xs-12">
+                <div class="box box-warning">
+                    <div class="box-body">
+                        <div class="form-group">
+                            <label>url cua trang web</label>
+                            <input type="text" name="url"  />
+                        </div>
+                    </div>
+
+                    <div class="box-footer clearfix">
+
+                        <button type="submit">check ssh</button>
+                        <c:if test="${not empty message}"> ${message}</c:if>
+                        </div>
+                    </div>
+                </div>
+        </form:form>
+
+
+
+
         <div class="col-xs-12">
             <label>Status</label>
             <div id="StatusCheck"></div>
@@ -59,20 +79,27 @@
         <script lang="javascript">
             function ajax_call() {
                 var temp = "${sessionScope.url}";
+                if (temp === "") {
 
-                $.ajax({
-                    type: "GET",
-                    url: temp,
-                    timeout: 100000,
-                    success: function (data) {
-                        console.log("SUCCESS: ", data);
-                        display(data);
-                    },
-                    error: function (e) {
-                        console.log("ERROR: ", e);
-                        display(e);
-                    }
-                });
+
+                } else {
+                    $.ajax({
+                        type: "GET",
+                        url: temp,
+                        timeout: 100000,
+                        success: function (data) {
+                            console.log("SUCCESS: ", data);
+                            display(data);
+                        },
+                        error: function (e) {
+                            console.log("ERROR: ", e);
+                            display(e);
+                        }
+                    });
+
+                }
+
+
             }
 
             var interval = 2000; // set time 

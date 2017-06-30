@@ -24,8 +24,11 @@
 
     
     <context:component-scan base-package="restcontroller"></context:component-scan>
+    <context:component-scan base-package="Service"></context:component-scan>
+    <context:component-scan base-package="Business"></context:component-scan>
+    
     <mvc:resources mapping="/webjars/**" location="classpath:META-INF/resources/webjars/" />
-     <mvc:resources mapping="/css/**" location="/resources/css/"/>
+    <mvc:resources mapping="/css/**" location="/resources/css/"/>
     <mvc:resources mapping="/js/**" location="/resources/js/"/>
     <mvc:resources mapping="/fonts/**" location="/resources/fonts/"/>
     <!--khai báo viewresolver để xử lý view===============================================================================================-->
