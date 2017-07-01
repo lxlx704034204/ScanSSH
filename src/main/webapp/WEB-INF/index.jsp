@@ -23,18 +23,28 @@
         <h1>Index</h1>
         <div class="col-xs-12">
             <s:url value="UploadFile" var="UploadFile"/>
-            <label>File</label>
+            <label>up load file</label>
             <a href="${UploadFile}">up load file</a>
         </div>
         <div class="col-xs-12">
             <s:url value="getListFile" var="getListFile"/>
-            <label>File</label>
+            <label>get List File</label>
             <a href="${getListFile}">get List File</a>
         </div>
         <div class="col-xs-12">
             <s:url value="getListInfo" var="getListInfo"/>
-            <label>File</label>
+            <label>get List Info</label>
             <a href="${getListInfo}">get List Info</a>
+        </div>
+        <div class="col-xs-12">
+            <s:url value="CheckSsh" var="CheckSsh"/>
+            <label>CheckSsh</label>
+            <a href="${CheckSsh}">CheckSsh</a>
+        </div>
+        <div class="col-xs-12">
+            <s:url value="ResultSSH" var="ResultSSH"/>
+            <label>ResultSSH</label>
+            <a href="${ResultSSH}">ResultSSH</a>
         </div>
     </body>
 </html>

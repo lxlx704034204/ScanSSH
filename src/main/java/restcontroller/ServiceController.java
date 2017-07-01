@@ -19,9 +19,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import net.schmizz.sshj.SSHClient;
-import net.schmizz.sshj.connection.channel.direct.Session;
-import net.schmizz.sshj.transport.verification.PromiscuousVerifier;
+
 import org.springframework.context.annotation.Scope;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,21 +30,27 @@ import org.springframework.web.bind.annotation.RestController;
 import Pojos.*;
 import Service.ReadService;
 import Service.UploadService;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.Session;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import javax.servlet.ServletContext;
+import javax.tools.FileObject;
+import org.apache.commons.vfs2.FileSystemOptions;
+import org.apache.commons.vfs2.Selectors;
+import org.apache.commons.vfs2.impl.StandardFileSystemManager;
+import org.apache.commons.vfs2.provider.sftp.SftpFileSystemConfigBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
-
 
 @RestController
 public class ServiceController {
 
     List<String> temp = new ArrayList<>();
 
-    private static float tongssh = 0;
-    private static float sshdacheck = 0;
-    private static String ip = "";
+  
     @Autowired
     ServletContext servletContext;
     @Autowired
@@ -55,40 +59,33 @@ public class ServiceController {
     ReadService readService;
     @Autowired
     ScanSSH scanSSH;
+    static Properties props;
 
-    @RequestMapping(value = {"/UpdateCheckSsh"}, method = RequestMethod.GET)
-    public String UpdateCheckSsh2() {
+   
 
-        tongssh = scanSSH.getTotalIps();
-        sshdacheck = scanSSH.getTotalIpsChecked();
-
-        if (scanSSH.getListsResultIps() != null && scanSSH.getListsResultIps().size() > 0) {
-            ip = scanSSH.getListsResultIps().get(0).getHost();
-
-        }
-
-        try {
-            return sshdacheck + "/" + tongssh + "/" + ip;
-        } catch (Exception e) {
-            e.getMessage();
-            return "fails";
-        }
-
-    }
-
-    @RequestMapping(value = "/ssh", method = RequestMethod.GET)
-    public String ssh() {
+    @RequestMapping(value = "/ssh/{ip}/{user}/{pass}", method = RequestMethod.GET)
+    public String ssh(
+            @PathVariable("ip") String ip,
+            @PathVariable("user") String user,
+            @PathVariable("pass") String pass) {
         String output = "";
+        Session session = null;
         try {
-            SSHClient sshClient = new SSHClient();
-            sshClient.addHostKeyVerifier(new PromiscuousVerifier());
-            sshClient.setTimeout(30000);
-            sshClient.connect("210.211.99.207");
+            JSch s = new JSch();
 
-            sshClient.authPassword("admin", "123456");
-            Session session = sshClient.startSession();
-            session.allocateDefaultPTY();
-            output = sshClient.isConnected() + "";
+            session = s.getSession(user, ip);
+            session.setPassword(pass);
+
+            session.setTimeout(0);
+            session.setConfig("StrictHostKeyChecking", "no");
+            session.setConfig("GSSAPIAuthentication", "no");
+            session.setConfig("kex", "diffie-hellman-group1-sha1,diffie-hellman-group14-sha1,diffie-hellman-group-exchange-sha1,diffie-hellman-group-exchange-sha256");
+            session.setConfig("server_host_key", "ssh-dss,ssh-rsa,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521");
+            session.setConfig("cipher.c2s",
+                    "blowfish-cbc,3des-cbc,aes128-cbc,aes192-cbc,aes256-cbc,aes128-ctr,aes192-ctr,aes256-ctr,3des-ctr,arcfour,arcfour128,arcfour256");
+            session.connect();
+
+            output = session.isConnected() + "";
 
             return output;
         } catch (Exception e) {

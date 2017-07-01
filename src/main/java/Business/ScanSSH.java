@@ -7,11 +7,13 @@ package Business;
 
 import Pojos.*;
 import Service.IPService;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.Session;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import net.schmizz.sshj.SSHClient;
-import net.schmizz.sshj.transport.verification.PromiscuousVerifier;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -119,7 +121,7 @@ public class ScanSSH {
     }
 
     public void Check_USER_PASS_START(int id_thread) {
-
+        String IpTemp = "";
         try {
             while (true) {
                 synchronized (syncObj) {
@@ -130,23 +132,7 @@ public class ScanSSH {
                         Long_IpRangeFocus = iPService.ipToLong2(ListsRangeIp.get(IndexOfListRange).getRangeBegin()) + CountIpRange;
                         //ip con trong range khong con thi lam
                         if (Long_IpRangeFocus <= Long_IpRangeEndFocus) {
-                            String_IpRangeFocus = iPService.longToIp2(Long_IpRangeFocus);
-                            for (int i = 0; i < ListsUserPass.size(); i++) {
-                                byte check = CHECK_LIVE(String_IpRangeFocus, ListsUserPass.get(i).getUsername(), ListsUserPass.get(i).getPassword(), id_thread);
-                                if (check == 1) {
-                                    synchronized (syncObj) {
-                                        InfoToConnectSSH info = new InfoToConnectSSH();
-                                        info.setHost(String_IpRangeFocus);
-                                        info.setUsername(ListsUserPass.get(i).getUsername());
-                                        info.setPassword(ListsUserPass.get(i).getPassword());
-
-                                        ListsResultIps.add(info);
-                                    }
-                                    break;
-                                }
-                            }
-
-                            // viet ham kiem tra
+                            IpTemp = iPService.longToIp2(Long_IpRangeFocus);
                             CountIpRange++;
                             TotalIpsChecked++;
                         } else {
@@ -162,6 +148,21 @@ public class ScanSSH {
 
                 }
 
+                for (int i = 0; i < ListsUserPass.size(); i++) {
+                    byte check = CHECK_LIVE(IpTemp, ListsUserPass.get(i).getUsername(), ListsUserPass.get(i).getPassword(), id_thread);
+                    if (check == 1) {
+
+                        InfoToConnectSSH info = new InfoToConnectSSH();
+                        info.setHost(IpTemp);
+                        info.setUsername(ListsUserPass.get(i).getUsername());
+                        info.setPassword(ListsUserPass.get(i).getPassword());
+
+                        ListsResultIps.add(info);
+
+                        break;
+                    }
+                }
+
             }
         } catch (Exception e) {
             e.getMessage();
@@ -169,28 +170,23 @@ public class ScanSSH {
 
     }
 
-    public byte CHECK_LIVE(String STR_IP, String User, String Pass, int id) {
+    public byte CHECK_LIVE(String STR_IP, String User, String Pass, int id) throws JSchException {
+        JSch sshClient = new JSch();
 
-        SSHClient sshClient = new SSHClient();
-        sshClient.addHostKeyVerifier(new PromiscuousVerifier());
-        sshClient.setTimeout(TimeOut * 1000);
-        int port = 22;
-        boolean success = false;
+        Session session = null;
+        session = sshClient.getSession(User, STR_IP);
+        session.setTimeout(TimeOut * 1000);
+        session.setConfig("StrictHostKeyChecking", "no");
+        session.setConfig("StrictHostKeyChecking", "no");
+        session.setConfig("GSSAPIAuthentication", "no");
+        session.setConfig("kex", "diffie-hellman-group1-sha1,diffie-hellman-group14-sha1,diffie-hellman-group-exchange-sha1,diffie-hellman-group-exchange-sha256");
+        session.setConfig("server_host_key", "ssh-dss,ssh-rsa,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521");
+        session.setConfig("cipher.c2s",
+                "blowfish-cbc,3des-cbc,aes128-cbc,aes192-cbc,aes256-cbc,aes128-ctr,aes192-ctr,aes256-ctr,3des-ctr,arcfour,arcfour128,arcfour256");
+
         try {
 
-            try {
-                sshClient.connect(STR_IP);
-                success = true;
-            } catch (Exception e) {
-                success = false;
-            }
-
-            if (!success) {
-                sshClient.close();
-                return 0;
-            }
-            sshClient.close();
-            if (apply_user_pass(sshClient, STR_IP, User, Pass, port, id) == 1) {
+            if (apply_user_pass(session, Pass, id) == 1) {
 
                 return 1;
             }
@@ -198,17 +194,17 @@ public class ScanSSH {
         } catch (Exception e) {
             e.getMessage();
         }
-        return 1;
+        return 0;
     }
 
-    public byte apply_user_pass(SSHClient s, String hostname, String user, String pass, int port, int id) throws IOException {
+    public byte apply_user_pass(Session s, String pass, int id) throws IOException {
 
         try {
             Bit_CheckIps[id] = false;
             Thread thread = new Thread() {
                 @Override
                 public void run() {
-                    Check_ssh(s, id, hostname, user, pass);
+                    Check_ssh(s, id, pass);
                 }
             };
             thread.start();
@@ -222,32 +218,34 @@ public class ScanSSH {
             thread.stop();
 
             if (g >= TimeOut) {
-                s.close();
+                s.disconnect();
                 return 0;
             }
 
             if (Bit_CheckIps[id] == false) {
-                s.close();
+                s.disconnect();
                 return 0;
             }
 
-            s.close();
+            s.disconnect();
             return 1;
         } catch (Exception e) {
             e.getMessage();
-            s.close();
+            s.disconnect();
             return 0;
         }
 
     }
 
-    public void Check_ssh(SSHClient s, int id, String hostname, String user, String pass) {
+    public void Check_ssh(Session session, int id, String pass) {
         try {
-            s.addHostKeyVerifier(new PromiscuousVerifier());
-            s.connect(hostname);
-            s.authPassword(user, pass);
+
+            session.setPassword(pass);
+            session.connect();
             Bit_CheckIps[id] = true;
+            NumberOfIpsLive++;
         } catch (Exception ex) {
+            ex.getMessage();
 
         }
 

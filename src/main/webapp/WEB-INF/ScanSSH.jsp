@@ -1,6 +1,6 @@
 <%-- 
-    Document   : UploadFile
-    Created on : Jun 28, 2017, 11:17:58 PM
+    Document   : ScanSSH
+    Created on : Jul 1, 2017, 5:57:19 AM
     Author     : Alex
 --%>
 
@@ -21,30 +21,49 @@
         <title>JSP Page</title>
     </head>
     <body>
-        <h1>Upload File</h1>
-        <s:url value="UploadFile" var="UploadFile"/>
+        <h1>Scan Result</h1>
+        <h1>Check ssh</h1>
+        <s:url value="CheckSsh" var="CheckSsh"/>
 
-        <form:form method="POST" action="${UploadFile}" enctype="multipart/form-data">
+        <form:form method="POST" action="${CheckSsh}">
             <div class="col-xs-12">
                 <div class="box box-warning">
-                    <div class="box-header with-border">
+                    <div class="box-body">
+                        <div class="form-group">
+                            <label>url cua trang web</label>
+                            <input type="text" name="url"  />
+                        </div>
                     </div>
                     <div class="box-body">
                         <div class="form-group">
-                            <label>File</label>
-                            <input type="file" name="file" />
+                            <label>ten file range</label>
+                            <input type="text" name="range"  />
                         </div>
                     </div>
+                    <div class="box-body">
+                        <div class="form-group">
+                            <label>ten file user pass</label>
+                            <input type="text" name="userpass"  />
+                        </div>
+                    </div>
+                    <div class="box-body">
+                        <div class="form-group">
+                            <label>so luong thread</label>
+                            <input type="number" name="thread"  />
+                        </div>
+                    </div>
+
                     <div class="box-footer clearfix">
 
-                        <button type="submit">gui</button>
+                        <button type="submit">check ssh</button>
                         <c:if test="${not empty message}"> ${message}</c:if>
                         </div>
                     </div>
                 </div>
         </form:form>
 
-        <br/> <br/> <br/> <br/>
+
+
        
     </body>
 </html>

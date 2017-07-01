@@ -5,11 +5,13 @@
  */
 package Pojos;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Alex
  */
-public class RangeIp {
+public class RangeIp implements Serializable{
     private String RangeBegin;
     private String RangeEnd;
 

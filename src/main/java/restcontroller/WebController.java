@@ -5,6 +5,7 @@
  */
 package restcontroller;
 
+import Business.ScanSSH;
 import Pojos.InfoToConnectSSH;
 import Service.GetInfoService;
 import Service.ReadService;
@@ -43,6 +44,12 @@ public class WebController {
     ReadService readService;
     @Autowired
     GetInfoService getInfoService;
+    @Autowired
+    ScanSSH scanSSH;
+
+    private static float tongssh = 0;
+    private static float sshdacheck = 0;
+    private static float sshlive = 0;
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String greeding() {
@@ -64,8 +71,9 @@ public class WebController {
     ) {
         String message = "";
         try {
-            message = uploadService.uploadToFtpServer("ftp.lisatthu.heliohost.org", "lisatthu35@lisatthu.heliohost.org", "lisatthu35", file);
-            mm.addAttribute("message", "upload thanh cong");
+            //message = uploadService.uploadFileToFtpServer("ftp.lisatthu.heliohost.org", "lisatthu35@lisatthu.heliohost.org", "lisatthu35", file);
+            message=uploadService.uploadFileLocal(file, "");
+            mm.addAttribute("message", message);
         } catch (Exception e) {
             mm.addAttribute("message", message);
             e.getMessage();
@@ -112,12 +120,70 @@ public class WebController {
     }
 
     @RequestMapping(value = {"/CheckSsh"}, method = RequestMethod.GET)
-    public String UpdateCheckSsh1(
-            @RequestParam("url") String url,
-            HttpServletRequest request, HttpSession session, ModelMap mm
-    ) {
-        session.setAttribute("url", url + "/UpdateCheckSsh");
-        return "UploadFile";
+    public String UpdateCheckSsh1() {
+
+        return "ScanSSH";
     }
 
+    @RequestMapping(value = {"/CheckSsh"}, method = RequestMethod.POST)
+    public String UpdateCheckSsh2(
+            @RequestParam("url") String url,
+            @RequestParam("range") String range,
+            @RequestParam("userpass") String userpass,
+            @RequestParam("thread") int thread,
+            HttpServletRequest request, HttpSession session, ModelMap mm
+    ) {
+        try {
+            scanSSH.setListsRange(readService.readFileFromFtpServer("ftp.lisatthu.heliohost.org", "lisatthu35@lisatthu.heliohost.org", "lisatthu35", range));
+            scanSSH.setListsUserPass(getInfoService.getListUserPass(readService.readFileFromFtpServer("ftp.lisatthu.heliohost.org", "lisatthu35@lisatthu.heliohost.org", "lisatthu35", userpass)));
+            scanSSH.setNumberOfThreads(thread);
+            scanSSH.StartSetting();
+
+        } catch (Exception e) {
+            e.getMessage();
+        }
+
+        session.setAttribute("url", url + "/UpdateCheckSsh");
+        return "ResultSSH";
+    }
+
+    @RequestMapping(value = {"/ResultSSH"}, method = RequestMethod.GET)
+    public String ResultSSH(ModelMap mm) {
+        tongssh = scanSSH.getTotalIps();
+        sshdacheck = scanSSH.getTotalIpsChecked();
+
+        if (scanSSH.getListsResultIps() != null && scanSSH.getListsResultIps().size() > 0) {
+            mm.addAttribute("listsInfo", scanSSH.getListsResultIps());
+            sshlive = scanSSH.getNumberOfIpsLive();
+        }
+        mm.addAttribute("tongssh", tongssh);
+        mm.addAttribute("sshdacheck", sshdacheck);
+        mm.addAttribute("sshlive", sshlive);
+        try {
+
+        } catch (Exception e) {
+            e.getMessage();
+
+        }
+        return "ResultSSH";
+    }
+
+    @RequestMapping(value = {"/UpdateCheckSsh"}, method = RequestMethod.GET)
+    public String UpdateCheckSsh2(ModelMap mm) {
+
+        tongssh = scanSSH.getTotalIps();
+        sshdacheck = scanSSH.getTotalIpsChecked();
+        sshlive = scanSSH.getNumberOfIpsLive();
+
+        mm.addAttribute("tongssh", tongssh);
+        mm.addAttribute("sshdacheck", sshdacheck);
+        mm.addAttribute("sshlive", sshlive);
+        try {
+
+        } catch (Exception e) {
+            e.getMessage();
+
+        }
+        return "TableSSH";
+    }
 }

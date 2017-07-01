@@ -5,11 +5,13 @@
  */
 package Pojos;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Alex
  */
-public class InfoToConnectSSH {
+public class InfoToConnectSSH implements Serializable{
    private String host;
    private String username;
    private String password;
