@@ -40,7 +40,7 @@ public class TestController {
             range.add("118.69.60.253-118.69.60.254");
             //get file range
             scanSSH.setListsRange(range);
-            scanSSH.setListsUserPass(getInfoService.getListUserPass(readService.readFileFromFtpServer("54.173.17.38", "ftp", "ftp123", name)));
+            scanSSH.setListsUserPass(getInfoService.getListUserPass(readService.readFileTMPFromSFtpServer("54.173.17.38", "ftp", "ftp123", name)));
             scanSSH.setNumberOfThreads(1);
             scanSSH.StartSetting();
 
