@@ -55,6 +55,9 @@ public class TestController {
     public String test2() {
         try {
             uploadService.uploadFileTempToFtpServer("54.173.17.38", "ftp", "ftp123", scanSSH.getListsResultIps());
+            if (scanSSH.getListsResultIps() != null && scanSSH.getListsResultIps().size() > 0) {
+                return scanSSH.getListsResultIps().get(0).getHost();
+            }
             int a = 0;
         } catch (Exception e) {
             e.getMessage();
