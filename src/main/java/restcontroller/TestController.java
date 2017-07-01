@@ -1,7 +1,7 @@
 package restcontroller;
 
 import Business.ScanSSH;
-import Pojos.RangeIp;
+import Pojos.*;
 import Service.GetInfoService;
 import Service.IPService;
 import Service.ReadService;
@@ -37,10 +37,12 @@ public class TestController {
         try {
 
             List<String> range = new ArrayList<>();
+            List<String> userpass = readService.readFileTMPFromSFtpServer("54.173.17.38", "ftp", "ftp123", name);
+            List<InfoToConnectSSH> info = getInfoService.getListUserPass(userpass);
             range.add("118.69.60.253-118.69.60.254");
             //get file range
             scanSSH.setListsRange(range);
-            scanSSH.setListsUserPass(getInfoService.getListUserPass(readService.readFileTMPFromSFtpServer("54.173.17.38", "ftp", "ftp123", name)));
+            scanSSH.setListsUserPass(info);
             scanSSH.setNumberOfThreads(1);
             scanSSH.StartSetting();
 
