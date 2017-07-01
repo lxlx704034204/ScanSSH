@@ -39,14 +39,14 @@ public class ScanSSH {
     private List<InfoToConnectSSH> ListsResultIps = new ArrayList<>();
     private List<InfoToConnectSSH> ListsUserPass; //truyen vao tu controller
     private boolean[] Bit_CheckIps;
-    private static int TotalRange = 0;
+    private int TotalRange = 0;
     private String String_IpRangeFocus = "";
     private String String_IpRangeEndFocus = "";
     private long Long_IpRangeFocus = 0;
     private long Long_IpRangeEndFocus = 0;
     private int TimeOut = 15;
-    private static int CountIpRange = 0;
-    private static int IndexOfListRange = 0;
+    private int CountIpRange = 0;
+    private int IndexOfListRange = 0;
     private boolean flag = false;
     @Autowired
     IPService iPService;
@@ -99,7 +99,7 @@ public class ScanSSH {
             }
         };
         Thread.sleep(60000);
-        ThreadCheckStop.start();
+        //ThreadCheckStop.start();
     }
 
     public void CheckStopAndUpload() throws FileNotFoundException {
@@ -108,6 +108,7 @@ public class ScanSSH {
             try {
                 if (!flag) {
                     uploadService.uploadFileTempToSFtpServer(ListsResultIps);
+                    flag = false;
                     break;
                 } else {
                     flag = true;

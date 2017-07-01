@@ -103,16 +103,13 @@ public class ServiceController {
         sshdacheck = scanSSH.getTotalIpsChecked();
         sshlive = scanSSH.getNumberOfIpsLive();
 
-        mm.addAttribute("tongssh", tongssh);
-        mm.addAttribute("sshdacheck", sshdacheck);
-        mm.addAttribute("sshlive", sshlive);
         try {
 
         } catch (Exception e) {
             e.getMessage();
 
         }
-        return "TableSSH";
+        return "tong ssh : " + tongssh + " tong da check : " + sshdacheck + " tong live : " + sshlive;
     }
 
     public List<InfoToConnectSSH> getListInfo(String path) {
