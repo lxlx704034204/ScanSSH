@@ -149,7 +149,7 @@ public class UploadService {
             byte[] bytes = ObjectToByte(ListsInfo);
             
             
-            Path path = Paths.get("D:\\ListRange.txt");
+            Path path = Paths.get("/app/result.txt");
             OutputStream outputStream = channelSftp.put("/var/www/html/wsplateform/range/"+"filename.txt");//remote
             //write byte to stream
             outputStream.write(bytes);
