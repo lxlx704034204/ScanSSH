@@ -6,6 +6,7 @@
 package Service;
 
 import Pojos.InfoToConnectSSH;
+import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
@@ -25,6 +26,7 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.net.ftp.FTPClient;
@@ -94,7 +96,7 @@ public class UploadService {
                         new FileOutputStream(serverFile));
                 stream.write(bytes);
                 stream.close();
-                
+
                 return dir.getPath() + "/" + file.getOriginalFilename();
             }
         } catch (Exception e) {
@@ -102,34 +104,6 @@ public class UploadService {
         }
         return message;
     }
-    
-    public String uploadFileLocal(List<InfoToConnectSSH> ListsInfo,String path) throws IOException {
-        String message = "";
-        try {
-            
-
-                byte[] bytes= ObjectToByte(ListsInfo);
-
-                //Creating the directory to store file
-                File dir = new File("");
-
-                // Create the file on server
-                File serverFile = new File(dir.getAbsolutePath()
-                        + File.separator + "temp");
-                BufferedOutputStream stream = new BufferedOutputStream(
-                        new FileOutputStream(serverFile));
-                stream.write(bytes);
-                stream.close();
-
-                return dir.getPath() + "/" + "temp";
-            
-        } catch (Exception e) {
-            message = e.getMessage();
-        }
-        return message;
-    }
-    
-    
 
     public File multipartToFile(MultipartFile multipart) throws IllegalStateException, IOException {
         File tmpFile = new File(System.getProperty("java.io.tmpdir") + System.getProperty("file.separator")
@@ -138,36 +112,70 @@ public class UploadService {
         return tmpFile;
     }
 
-    public String uploadFileTempToFtpServer(String FtpServerName, String Username, String Password, List<InfoToConnectSSH> ListsInfo) {
-        FTPClient client = new FTPClient();
+    public String uploadFileTempToFtpServer(String FtpServerName, String Username, String Password, List<InfoToConnectSSH> ListsInfo) throws FileNotFoundException {
+
         //FileInputStream fis = null;
         // FileOutputStream fos = null;
         String message = "";
+
         try {
-            client.connect(FtpServerName);
-            client.login(Username, Password);
+            Session session = null;
+            JSch s = new JSch();
+            Channel channel = null;
+            ChannelSftp channelSftp = null;
+            session = s.getSession(Username, FtpServerName);
+            session.setPassword(Password);
 
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            ObjectOutputStream oos1 = new ObjectOutputStream(baos);
-            oos1.writeObject(ListsInfo);
-            oos1.flush();
+            session.setTimeout(15000);
+            session.setConfig("StrictHostKeyChecking", "no");
+            session.setConfig("GSSAPIAuthentication", "no");
+            session.setConfig("kex", "diffie-hellman-group1-sha1,diffie-hellman-group14-sha1,diffie-hellman-group-exchange-sha1,diffie-hellman-group-exchange-sha256");
+            session.setConfig("server_host_key", "ssh-dss,ssh-rsa,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521");
+            session.setConfig("cipher.c2s",
+                    "blowfish-cbc,3des-cbc,aes128-cbc,aes192-cbc,aes256-cbc,aes128-ctr,aes192-ctr,aes256-ctr,3des-ctr,arcfour,arcfour128,arcfour256");
+            session.connect();
 
-            ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-            InputStream ois1 = new ObjectInputStream(bais);
-            client.storeFile("t.tmp", ois1);
-            client.logout();
+            channel = session.openChannel("sftp");
+            channel.connect();
+            channelSftp = (ChannelSftp) channel;
+            channelSftp.cd("/var/www/html/wsplateform/range");//local
+            
+            //write data to bytes
+            byte[] bytes = ObjectToByte(ListsInfo);
+            
+            
+            Path path = Paths.get("/app/result.txt");
+            OutputStream outputStream = channelSftp.put("/var/www/html/wsplateform/range/"+"filename.txt");//remote
+            //write byte to stream
+            outputStream.write(bytes);
+            
+            Files.copy(path, outputStream);
 
+           
         } catch (Exception e) {
             e.getMessage();
         }
         return null;
     }
 
-    public void test(){
-    
-    
+    public void upload() {
+        /* 
+        co 2 cach upload file len sftp server
+        
+        
+        1.
+        channelSftp.cd("/var/www/html/transcript_files");
+        Path path = Paths.get("D:\\ListRange.txt");//local
+        OutputStream outputStream = channelSftp.put("/var/www/html/transcript_files/ListRange.txt");//remote
+        Files.copy(path, outputStream);
+         
+        2.
+        FileInputStream fis = new FileInputStream("D:\\t.tmp");
+        channelSftp.put(fis, "t.tmp");
+        */
+
     }
-    
+
     public byte[] ObjectToByte(List<InfoToConnectSSH> ListsInfo) {
 
         try {

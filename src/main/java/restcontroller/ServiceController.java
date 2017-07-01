@@ -69,8 +69,9 @@ public class ServiceController {
             @PathVariable("user") String user,
             @PathVariable("pass") String pass) {
         String output = "";
-        Session session = null;
+       
         try {
+             Session session = null;
             JSch s = new JSch();
 
             session = s.getSession(user, ip);

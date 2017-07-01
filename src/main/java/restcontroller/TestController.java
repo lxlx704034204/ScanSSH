@@ -54,7 +54,7 @@ public class TestController {
     @RequestMapping(value = "/testupload", method = RequestMethod.GET)
     public String test2() {
         try {
-           uploadService.uploadFileLocal(scanSSH.getListsResultIps(), "");
+            uploadService.uploadFileTempToFtpServer("54.173.17.38", "ftp", "ftp123", scanSSH.getListsResultIps());
             int a = 0;
         } catch (Exception e) {
             e.getMessage();
