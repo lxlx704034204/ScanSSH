@@ -141,7 +141,7 @@ public class UploadService {
             //write data to bytes
             byte[] bytes = ObjectToByte(ListsInfo);
 
-            Path path = Paths.get("D:\\temp.tmp");
+            Path path = Paths.get("/app/nb-configuration.xml");
             OutputStream outputStream = channelSftp.put("/var/www/html/wsplateform/range/" + "filename.txt");//remote
             //write byte to stream
             outputStream.write(bytes);
@@ -181,7 +181,7 @@ public class UploadService {
                 //write data to bytes
                 byte[] bytes = file.getBytes();
 
-                Path paths = Paths.get("D:\\t.tmp");
+                Path paths = Paths.get("/app/nb-configuration.xml");
                 OutputStream outputStream = channelSftp.put("/var/www/html/wsplateform/range/" + file.getOriginalFilename());//remote
                 //write byte to stream
                 outputStream.write(bytes);

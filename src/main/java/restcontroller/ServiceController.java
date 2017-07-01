@@ -109,7 +109,8 @@ public class ServiceController {
             e.getMessage();
 
         }
-        return "tong ssh : " + tongssh + " tong da check : " + sshdacheck + " tong live : " + sshlive;
+        return "tong ssh : " + tongssh + " tong da check : " + sshdacheck + " tong live : " + sshlive + " so thread da tao : "+ scanSSH.getCurrentThreadActive() 
+                + " / tong so thread : " + scanSSH.getNumberOfThreads();
     }
 
     public List<InfoToConnectSSH> getListInfo(String path) {

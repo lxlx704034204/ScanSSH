@@ -8,7 +8,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/bootstrap.min.css">
         <!-- Font Awesome -->
-        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/font-awesome.min.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/fonts/font-awesome.min.css">
         <script src="${pageContext.request.contextPath}/js/jQuery-2.2.0.min.js"></script>
         <!-- Bootstrap 3.3.6 -->
         <script src="${pageContext.request.contextPath}/js/bootstrap.min.js"></script>
