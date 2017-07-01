@@ -6,15 +6,23 @@
 package Service;
 
 import Pojos.InfoToConnectSSH;
+import com.jcraft.jsch.Channel;
+import com.jcraft.jsch.ChannelSftp;
+import com.jcraft.jsch.Session;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class GetInfoService {
+
+    @Autowired
+    Session session;
 
     public List<InfoToConnectSSH> getListInfoToConnectSSH(List<String> ListsInfo) {
 
@@ -90,6 +98,34 @@ public class GetInfoService {
         } catch (Exception e) {
             e.getMessage();
             client.disconnect();
+        }
+        return null;
+    }
+
+    public List<String> getListFileOnSFtpServer() {
+        List<String> lists = new ArrayList<>();
+        try {
+            Channel channel = null;
+            ChannelSftp channelSftp = null;
+            session.setTimeout(15000);
+            if (!session.isConnected()) {
+                session.setPassword("ftp123");
+                session.connect();
+            }
+
+            channel = session.openChannel("sftp");
+            channel.connect();
+            channelSftp = (ChannelSftp) channel;
+            channelSftp.cd("/var/www/html/wsplateform/range");
+            Vector<ChannelSftp.LsEntry> list = channelSftp.ls("*.txt");
+            for (ChannelSftp.LsEntry entry : list) {
+                lists.add(entry.getFilename());
+            }
+            channel.disconnect();
+
+            return lists;
+        } catch (Exception e) {
+            e.getMessage();
         }
         return null;
     }

@@ -72,7 +72,7 @@ public class WebController {
         String message = "";
         try {
             //message = uploadService.uploadFileToFtpServer("ftp.lisatthu.heliohost.org", "lisatthu35@lisatthu.heliohost.org", "lisatthu35", file);
-            message=uploadService.uploadFileLocal(file, "");
+            message = uploadService.uploadFileTempToSFtpServer(file, "");
             mm.addAttribute("message", message);
         } catch (Exception e) {
             mm.addAttribute("message", message);
@@ -85,8 +85,8 @@ public class WebController {
     public String getListFile(ModelMap mm) {
         String message = "";
         try {
-            //List<InfoToConnectSSH> list1 = readService.getListInfoToConnectSSH(readService.readFileFromFtpServer("ftp.lisatthu.heliohost.org", "lisatthu35@lisatthu.heliohost.org", "lisatthu35", "Touch.txt"));
-            List<String> lists = getInfoService.getListFileOnFtpServer("ftp.lisatthu.heliohost.org", "lisatthu35@lisatthu.heliohost.org", "lisatthu35");
+            //List<String> lists = getInfoService.getListFileOnFtpServer("ftp.lisatthu.heliohost.org", "lisatthu35@lisatthu.heliohost.org", "lisatthu35");
+            List<String> lists = getInfoService.getListFileOnSFtpServer();
             mm.addAttribute("listsFile", lists);
 
         } catch (Exception e) {
@@ -108,8 +108,8 @@ public class WebController {
         String message = "";
 
         try {
-            List<InfoToConnectSSH> lists = getInfoService.getListInfoToConnectSSH(readService.readFileFromFtpServer("ftp.lisatthu.heliohost.org", "lisatthu35@lisatthu.heliohost.org", "lisatthu35", name));
-
+            //List<InfoToConnectSSH> lists = getInfoService.getListInfoToConnectSSH(readService.readFileFromFtpServer("ftp.lisatthu.heliohost.org", "lisatthu35@lisatthu.heliohost.org", "lisatthu35", name));
+            List<InfoToConnectSSH> lists = getInfoService.getListInfoToConnectSSH(readService.readFileTMPFromSFtpServer(name));
             mm.addAttribute("listsInfo", lists);
 
         } catch (Exception e) {
@@ -134,8 +134,8 @@ public class WebController {
             HttpServletRequest request, HttpSession session, ModelMap mm
     ) {
         try {
-            scanSSH.setListsRange(readService.readFileFromFtpServer("ftp.lisatthu.heliohost.org", "lisatthu35@lisatthu.heliohost.org", "lisatthu35", range));
-            scanSSH.setListsUserPass(getInfoService.getListUserPass(readService.readFileFromFtpServer("ftp.lisatthu.heliohost.org", "lisatthu35@lisatthu.heliohost.org", "lisatthu35", userpass)));
+            scanSSH.setListsRange(readService.readFileTMPFromSFtpServer(range));
+            scanSSH.setListsUserPass(getInfoService.getListUserPass(readService.readFileTMPFromSFtpServer(userpass)));
             scanSSH.setNumberOfThreads(thread);
             scanSSH.StartSetting();
 
@@ -168,22 +168,5 @@ public class WebController {
         return "ResultSSH";
     }
 
-    @RequestMapping(value = {"/UpdateCheckSsh"}, method = RequestMethod.GET)
-    public String UpdateCheckSsh2(ModelMap mm) {
-
-        tongssh = scanSSH.getTotalIps();
-        sshdacheck = scanSSH.getTotalIpsChecked();
-        sshlive = scanSSH.getNumberOfIpsLive();
-
-        mm.addAttribute("tongssh", tongssh);
-        mm.addAttribute("sshdacheck", sshdacheck);
-        mm.addAttribute("sshlive", sshlive);
-        try {
-
-        } catch (Exception e) {
-            e.getMessage();
-
-        }
-        return "TableSSH";
-    }
+   
 }

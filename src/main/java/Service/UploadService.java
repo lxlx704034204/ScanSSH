@@ -32,11 +32,15 @@ import java.util.List;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPFileFilter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class UploadService {
+
+    @Autowired
+    Session session;
 
     public String uploadFileToFtpServer(String FtpServerName, String Username, String Password, MultipartFile file) throws IllegalStateException, IOException {
         FTPClient client = new FTPClient();
@@ -87,7 +91,7 @@ public class UploadService {
                 byte[] bytes = file.getBytes();
 
                 //Creating the directory to store file
-                File dir = new File("");
+                File dir = new File(path);
 
                 // Create the file on server
                 File serverFile = new File(dir.getAbsolutePath()
@@ -112,7 +116,7 @@ public class UploadService {
         return tmpFile;
     }
 
-    public String uploadFileTempToFtpServer(String FtpServerName, String Username, String Password, List<InfoToConnectSSH> ListsInfo) throws FileNotFoundException {
+    public String uploadFileTempToSFtpServer(List<InfoToConnectSSH> ListsInfo) throws FileNotFoundException {
 
         //FileInputStream fis = null;
         // FileOutputStream fos = null;
@@ -120,47 +124,80 @@ public class UploadService {
 
         try {
             //config
-            Session session = null;
-            JSch s = new JSch();
             Channel channel = null;
             ChannelSftp channelSftp = null;
-            session = s.getSession(Username, FtpServerName);
-            session.setPassword(Password);
-
             session.setTimeout(15000);
-            session.setConfig("StrictHostKeyChecking", "no");
-            session.setConfig("GSSAPIAuthentication", "no");
-            session.setConfig("kex", "diffie-hellman-group1-sha1,diffie-hellman-group14-sha1,diffie-hellman-group-exchange-sha1,diffie-hellman-group-exchange-sha256");
-            session.setConfig("server_host_key", "ssh-dss,ssh-rsa,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521");
-            session.setConfig("cipher.c2s",
-                    "blowfish-cbc,3des-cbc,aes128-cbc,aes192-cbc,aes256-cbc,aes128-ctr,aes192-ctr,aes256-ctr,3des-ctr,arcfour,arcfour128,arcfour256");
-            session.connect();
+            if (!session.isConnected()) {
+                session.setPassword("ftp123");
+                session.connect();
+            }
 
             channel = session.openChannel("sftp");
             channel.connect();
             channelSftp = (ChannelSftp) channel;
-            
-            
+
             channelSftp.cd("/var/www/html/wsplateform/range");//local
-            
-           
-            
+
             //write data to bytes
             byte[] bytes = ObjectToByte(ListsInfo);
-            
-            
-            Path path = Paths.get("/app/result.txt");
-            OutputStream outputStream = channelSftp.put("/var/www/html/wsplateform/range/"+"filename.txt");//remote
+
+            Path path = Paths.get("D:\\temp.tmp");
+            OutputStream outputStream = channelSftp.put("/var/www/html/wsplateform/range/" + "filename.txt");//remote
             //write byte to stream
             outputStream.write(bytes);
-            
+
             Files.copy(path, outputStream);
 
-           
+            channel.disconnect();
+
+            return "filename.txt";
         } catch (Exception e) {
-            e.getMessage();
+            message = e.getMessage();
         }
-        return null;
+        return message;
+    }
+
+    public String uploadFileTempToSFtpServer(MultipartFile file, String path) throws FileNotFoundException {
+
+        String message = "";
+
+        try {
+            if (!file.isEmpty()) {
+                //config
+                Channel channel = null;
+                ChannelSftp channelSftp = null;
+                session.setTimeout(15000);
+                if (!session.isConnected()) {
+                    session.setPassword("ftp123");
+                    session.connect();
+                }
+
+                channel = session.openChannel("sftp");
+                channel.connect();
+                channelSftp = (ChannelSftp) channel;
+
+                channelSftp.cd("/var/www/html/wsplateform/range");//local
+
+                //write data to bytes
+                byte[] bytes = file.getBytes();
+
+                Path paths = Paths.get("D:\\t.tmp");
+                OutputStream outputStream = channelSftp.put("/var/www/html/wsplateform/range/" + file.getOriginalFilename());//remote
+                //write byte to stream
+                outputStream.write(bytes);
+
+                Files.copy(paths, outputStream);
+                outputStream.close();
+                channel.disconnect();
+               
+
+                return message = file.getOriginalFilename();
+            }
+
+        } catch (Exception e) {
+            message = e.getMessage();
+        }
+        return message;
     }
 
     public void upload() {
@@ -177,7 +214,7 @@ public class UploadService {
         2.
         FileInputStream fis = new FileInputStream("D:\\t.tmp");
         channelSftp.put(fis, "t.tmp");
-        */
+         */
 
     }
 

@@ -18,11 +18,16 @@ import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import org.apache.commons.net.ftp.FTPClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ReadService {
+
+    @Autowired
+    Session session;
 
     public List<String> readFileFromFtpServer(String FtpServerName, String Username, String Password, String filename) throws IOException {
         FTPClient ftpClient = new FTPClient();
@@ -57,41 +62,37 @@ public class ReadService {
         return null;
     }
 
-    public List<String> readFileTMPFromSFtpServer(String FtpServerName, String Username, String Password, String filename) throws IOException, ClassNotFoundException {
+    public List<String> readFileTMPFromSFtpServer(String filename) throws IOException, ClassNotFoundException {
         List<String> lists = new ArrayList<>();
         BufferedReader reader = null;
-        String read="";
+        String read = "";
         try {
-            Session session = null;
-            JSch s = new JSch();
+
             Channel channel = null;
             ChannelSftp channelSftp = null;
-            session = s.getSession(Username, FtpServerName);
-            session.setPassword(Password);
-
             session.setTimeout(15000);
-            session.setConfig("StrictHostKeyChecking", "no");
-            session.setConfig("GSSAPIAuthentication", "no");
-            session.setConfig("kex", "diffie-hellman-group1-sha1,diffie-hellman-group14-sha1,diffie-hellman-group-exchange-sha1,diffie-hellman-group-exchange-sha256");
-            session.setConfig("server_host_key", "ssh-dss,ssh-rsa,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521");
-            session.setConfig("cipher.c2s",
-                    "blowfish-cbc,3des-cbc,aes128-cbc,aes192-cbc,aes256-cbc,aes128-ctr,aes192-ctr,aes256-ctr,3des-ctr,arcfour,arcfour128,arcfour256");
-            session.connect();
+            if (!session.isConnected()) {
+                session.setPassword("ftp123");
+                session.connect();
+            }
 
             channel = session.openChannel("sftp");
             channel.connect();
             channelSftp = (ChannelSftp) channel;
 
-            InputStream fis = channelSftp.get("/var/www/html/wsplateform/range/"+filename);
+            InputStream fis = channelSftp.get("/var/www/html/wsplateform/range/" + filename);
 
             reader = new BufferedReader(new InputStreamReader(fis, "UTF-8"));
 
             while ((read = reader.readLine()) != null) {
                 lists.add(read);
             }
+            channel.disconnect();
+
             return lists;
 
         } catch (Exception e) {
+            e.getMessage();
         }
         return null;
     }

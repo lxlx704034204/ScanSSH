@@ -16,7 +16,52 @@
     </head>
     <body>
         <h1>Result ssh!</h1>
+        <c:if test="${not empty tongssh}">tongssh : ${tongssh}</c:if>
+        <c:if test="${not empty sshdacheck}">sshdacheck : ${sshdacheck}</c:if>
+        <c:if test="${not empty sshlive}">sshlive : ${sshlive}</c:if>
 
+        <c:if test="${not empty listsInfo}">
+            <table id="example2" class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>stt</th>
+                        <th>host</th>
+                        <th>user</th>
+                        <th>pass</th>
+                        <th>country</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <c:forEach var="lists" items="${listsInfo}" varStatus="status">
+                        <c:set value="${status.index}" var="index"/>
+                        <tr>
+
+                            <td>
+                                ${status.index}
+                            </td>
+
+                            <td>
+                                ${lists.host}
+                            </td>
+                            <td>
+                                ${lists.username}
+                            </td>
+                            <td>
+                                ${lists.password}
+                            </td>
+                            <td>
+                                ${lists.country}
+                            </td>
+
+
+
+                        </tr>
+                    </c:forEach>
+                </tbody>
+
+            </table>
+        </c:if>
 
 
 

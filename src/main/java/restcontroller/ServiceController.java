@@ -50,7 +50,6 @@ public class ServiceController {
 
     List<String> temp = new ArrayList<>();
 
-  
     @Autowired
     ServletContext servletContext;
     @Autowired
@@ -60,8 +59,9 @@ public class ServiceController {
     @Autowired
     ScanSSH scanSSH;
     static Properties props;
-
-   
+    private static float tongssh = 0;
+    private static float sshdacheck = 0;
+    private static float sshlive = 0;
 
     @RequestMapping(value = "/ssh/{ip}/{user}/{pass}", method = RequestMethod.GET)
     public String ssh(
@@ -69,15 +69,15 @@ public class ServiceController {
             @PathVariable("user") String user,
             @PathVariable("pass") String pass) {
         String output = "";
-       
+
         try {
-             Session session = null;
+            Session session = null;
             JSch s = new JSch();
 
             session = s.getSession(user, ip);
             session.setPassword(pass);
 
-            session.setTimeout(0);
+            session.setTimeout(15000);
             session.setConfig("StrictHostKeyChecking", "no");
             session.setConfig("GSSAPIAuthentication", "no");
             session.setConfig("kex", "diffie-hellman-group1-sha1,diffie-hellman-group14-sha1,diffie-hellman-group-exchange-sha1,diffie-hellman-group-exchange-sha256");
@@ -94,6 +94,25 @@ public class ServiceController {
             return e.getMessage();
         }
 
+    }
+
+    @RequestMapping(value = {"/UpdateCheckSsh"}, method = RequestMethod.GET)
+    public String UpdateCheckSsh2(ModelMap mm) {
+
+        tongssh = scanSSH.getTotalIps();
+        sshdacheck = scanSSH.getTotalIpsChecked();
+        sshlive = scanSSH.getNumberOfIpsLive();
+
+        mm.addAttribute("tongssh", tongssh);
+        mm.addAttribute("sshdacheck", sshdacheck);
+        mm.addAttribute("sshlive", sshlive);
+        try {
+
+        } catch (Exception e) {
+            e.getMessage();
+
+        }
+        return "TableSSH";
     }
 
     public List<InfoToConnectSSH> getListInfo(String path) {

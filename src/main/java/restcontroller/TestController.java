@@ -37,7 +37,7 @@ public class TestController {
         try {
 
             List<String> range = new ArrayList<>();
-            List<String> userpass = readService.readFileTMPFromSFtpServer("54.173.17.38", "ftp", "ftp123", name);
+            List<String> userpass = readService.readFileTMPFromSFtpServer(name);
             List<InfoToConnectSSH> info = getInfoService.getListUserPass(userpass);
             range.add("118.69.60.253-118.69.60.254");
             //get file range
@@ -56,7 +56,7 @@ public class TestController {
     @RequestMapping(value = "/testupload", method = RequestMethod.GET)
     public String test2() {
         try {
-            uploadService.uploadFileTempToFtpServer("54.173.17.38", "ftp", "ftp123", scanSSH.getListsResultIps());
+            //uploadService.uploadFileTempToSFtpServer(scanSSH.getListsResultIps());
             if (scanSSH.getListsResultIps() != null && scanSSH.getListsResultIps().size() > 0) {
                 return scanSSH.getListsResultIps().get(0).getHost();
             }
@@ -70,7 +70,18 @@ public class TestController {
     @RequestMapping(value = "/testread", method = RequestMethod.GET)
     public String testread() {
         try {
-            readService.readFileTMPFromSFtpServer("54.173.17.38", "ftp", "ftp123", "ListUserPass.txt");
+            readService.readFileTMPFromSFtpServer("ListUserPass.txt");
+            int a = 0;
+        } catch (Exception e) {
+            e.getMessage();
+        }
+        return "test ";
+    }
+
+    @RequestMapping(value = "/testlistfile", method = RequestMethod.GET)
+    public String testlistfile() {
+        try {
+            getInfoService.getListFileOnSFtpServer();
             int a = 0;
         } catch (Exception e) {
             e.getMessage();

@@ -16,6 +16,7 @@
                 
 		http://www.springframework.org/schema/context
 		http://www.springframework.org/schema/context/spring-context-3.0.xsd
+
                 
                 http://www.springframework.org/schema/mvc 
                 http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd"
@@ -26,6 +27,8 @@
     <context:component-scan base-package="restcontroller"></context:component-scan>
     <context:component-scan base-package="Service"></context:component-scan>
     <context:component-scan base-package="Business"></context:component-scan>
+    <context:component-scan base-package="Bean"></context:component-scan>
+
     
     <mvc:resources mapping="/webjars/**" location="classpath:META-INF/resources/webjars/" />
     <mvc:resources mapping="/css/**" location="/resources/css/"/>
@@ -38,7 +41,7 @@
         <property name="suffix" value=".jsp"/>
       
     </bean>
-    
+
     <!--upload file-->
     <mvc:default-servlet-handler/>
     <bean id="multipartResolver"
@@ -47,7 +50,7 @@
 
     <context:annotation-config/>
     <mvc:annotation-driven />
-
+   
 
     
   

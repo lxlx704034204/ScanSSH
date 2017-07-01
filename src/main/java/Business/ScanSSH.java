@@ -7,9 +7,11 @@ package Business;
 
 import Pojos.*;
 import Service.IPService;
+import Service.UploadService;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,12 +31,9 @@ public class ScanSSH {
     private int CurrentThreadActive = 0;
     // du lieu de ssh hoat dong
     private static Object syncObj = new Object();
-    static Object syncObjF = new Object();
-    static Object syncObjR = new Object();
-    static Object syncObjCNTRY = new Object();
-    static Object syncObjLOWCPU = new Object();
 
     private Thread[] thread;
+    private Thread ThreadCheckStop;
     private List<RangeIp> ListsRangeIp;
     private List<String> ListsRange; // truyen vao tu controller
     private List<InfoToConnectSSH> ListsResultIps = new ArrayList<>();
@@ -48,8 +47,13 @@ public class ScanSSH {
     private int TimeOut = 15;
     private static int CountIpRange = 0;
     private static int IndexOfListRange = 0;
+    private boolean flag = false;
     @Autowired
     IPService iPService;
+    @Autowired
+    UploadService uploadService;
+    @Autowired
+    JSch sshClient;
 
     //khoi tao cac gia tri ban dau
     public void StartSetting() throws InterruptedException {
@@ -82,6 +86,42 @@ public class ScanSSH {
             Run(i);
             Thread.sleep(100);
         }
+        //tao thread check viec dung
+        ThreadCheckStop = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    CheckStopAndUpload();
+                } catch (Exception e) {
+                    e.getMessage();
+                }
+
+            }
+        };
+        Thread.sleep(60000);
+        ThreadCheckStop.start();
+    }
+
+    public void CheckStopAndUpload() throws FileNotFoundException {
+
+        while (true) {
+            try {
+                if (!flag) {
+                    uploadService.uploadFileTempToSFtpServer(ListsResultIps);
+                    break;
+                } else {
+                    flag = true;
+                    for (int i = 0; i < thread.length; i++) {
+
+                        flag = flag && !thread[i].isAlive();
+                    }
+
+                }
+            } catch (Exception e) {
+                e.getMessage();
+            }
+
+        }
 
     }
 
@@ -92,6 +132,7 @@ public class ScanSSH {
             public void run() {
                 try {
                     Check_USER_PASS_START(id_thread);
+                    CurrentThreadActive++;
                 } catch (Exception e) {
                     e.getMessage();
                 }
@@ -101,17 +142,11 @@ public class ScanSSH {
         thread[id_thread].start();
     }
 
-    public void stop_now(int id_thread) {
+    public void stop() {
         try {
             for (int i = 0; i < NumberOfThreads; i++) {
-                if (i != id_thread) {
-                    if (!thread[i].isAlive()) {
-                        thread[i].stop();
-                    }
-                } else {
-                    if (!thread[id_thread].isAlive()) {
-                        thread[id_thread].stop();
-                    }
+                if (!thread[i].isAlive()) {
+
                 }
             }
 
@@ -171,7 +206,6 @@ public class ScanSSH {
     }
 
     public byte CHECK_LIVE(String STR_IP, String User, String Pass, int id) throws JSchException {
-        JSch sshClient = new JSch();
 
         Session session = null;
         session = sshClient.getSession(User, STR_IP);
@@ -286,6 +320,14 @@ public class ScanSSH {
 
     public void setListsResultIps(List<InfoToConnectSSH> ListsResultIps) {
         this.ListsResultIps = ListsResultIps;
+    }
+
+    public int getCurrentThreadActive() {
+        return CurrentThreadActive;
+    }
+
+    public Thread[] getThread() {
+        return thread;
     }
 
 }
