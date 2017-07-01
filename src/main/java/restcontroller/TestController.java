@@ -40,7 +40,7 @@ public class TestController {
             range.add("118.69.60.253-118.69.60.254");
             //get file range
             scanSSH.setListsRange(range);
-            scanSSH.setListsUserPass(getInfoService.getListUserPass(readService.readFileFromFtpServer("ftp.lisatthu.heliohost.org", "lisatthu35@lisatthu.heliohost.org", "lisatthu35", name)));
+            scanSSH.setListsUserPass(getInfoService.getListUserPass(readService.readFileFromFtpServer("54.173.17.38", "ftp", "ftp123", name)));
             scanSSH.setNumberOfThreads(1);
             scanSSH.StartSetting();
 
@@ -65,7 +65,7 @@ public class TestController {
     @RequestMapping(value = "/testread", method = RequestMethod.GET)
     public String testread() {
         try {
-            readService.readFileTMPFromFtpServer("ftp.lisatthu.heliohost.org", "lisatthu35@lisatthu.heliohost.org", "lisatthu35", "t.tmp");
+            readService.readFileTMPFromSFtpServer("54.173.17.38", "ftp", "ftp123", "ListUserPass.txt");
             int a = 0;
         } catch (Exception e) {
             e.getMessage();

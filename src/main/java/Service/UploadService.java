@@ -119,6 +119,7 @@ public class UploadService {
         String message = "";
 
         try {
+            //config
             Session session = null;
             JSch s = new JSch();
             Channel channel = null;
@@ -138,7 +139,11 @@ public class UploadService {
             channel = session.openChannel("sftp");
             channel.connect();
             channelSftp = (ChannelSftp) channel;
+            
+            
             channelSftp.cd("/var/www/html/wsplateform/range");//local
+            
+           
             
             //write data to bytes
             byte[] bytes = ObjectToByte(ListsInfo);
