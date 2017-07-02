@@ -29,6 +29,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPFileFilter;
@@ -118,9 +119,13 @@ public class UploadService {
 
     public String uploadFileTempToSFtpServer(List<InfoToConnectSSH> ListsInfo) throws FileNotFoundException {
 
+        Random r = new Random();
+        int n = r.nextInt(9999);
         //FileInputStream fis = null;
         // FileOutputStream fos = null;
         String message = "";
+        String filePath = new File("").getAbsolutePath();
+        filePath.concat("nb-configuration.xml");
 
         try {
             //config
@@ -142,7 +147,7 @@ public class UploadService {
             byte[] bytes = ObjectToByte(ListsInfo);
 
             Path path = Paths.get("/app/nb-configuration.xml");
-            OutputStream outputStream = channelSftp.put("/var/www/html/wsplateform/range/" + "filename.txt");//remote
+            OutputStream outputStream = channelSftp.put("/var/www/html/wsplateform/range/" + "resultssh"+n+".txt");//remote
             //write byte to stream
             outputStream.write(bytes);
 

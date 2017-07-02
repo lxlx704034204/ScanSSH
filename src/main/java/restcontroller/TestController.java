@@ -40,6 +40,7 @@ public class TestController {
             List<String> userpass = readService.readFileTMPFromSFtpServer(name);
             List<InfoToConnectSSH> info = getInfoService.getListUserPass(userpass);
             range.add("118.69.60.253-118.69.60.254");
+            range.add("117.253.105.44-117.253.105.45");
             //get file range
             scanSSH.setListsRange(range);
             scanSSH.setListsUserPass(info);
@@ -56,7 +57,7 @@ public class TestController {
     @RequestMapping(value = "/testupload", method = RequestMethod.GET)
     public String test2() {
         try {
-            //uploadService.uploadFileTempToSFtpServer(scanSSH.getListsResultIps());
+            uploadService.uploadFileTempToSFtpServer(scanSSH.getListsResultIps());
             if (scanSSH.getListsResultIps() != null && scanSSH.getListsResultIps().size() > 0) {
                 return scanSSH.getListsResultIps().get(0).getHost();
             }

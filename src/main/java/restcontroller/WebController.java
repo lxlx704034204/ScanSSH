@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class WebController {
@@ -148,7 +149,7 @@ public class WebController {
     }
 
     @RequestMapping(value = {"/ResultSSH"}, method = RequestMethod.GET)
-    public String ResultSSH(ModelMap mm) {
+    public String ResultSSH(ModelMap mm ) {
         tongssh = scanSSH.getTotalIps();
         sshdacheck = scanSSH.getTotalIpsChecked();
 
@@ -168,5 +169,18 @@ public class WebController {
         return "ResultSSH";
     }
 
-   
+    @RequestMapping(value = "/SaveSsh", method = RequestMethod.GET)
+    public String test2(RedirectAttributes redirectAttrs) {
+        String message = "";
+        try {
+            uploadService.uploadFileTempToSFtpServer(scanSSH.getListsResultIps());
+            message = "upload thanh cong : so ssh :" + scanSSH.getListsResultIps().size();
+
+        } catch (Exception e) {
+            message = e.getMessage();
+        }
+        redirectAttrs.addFlashAttribute("message", message);
+        return "redirect:/ResultSSH ";
+    }
+
 }

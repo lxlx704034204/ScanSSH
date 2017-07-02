@@ -109,55 +109,8 @@ public class ServiceController {
             e.getMessage();
 
         }
-        return "tong ssh : " + tongssh + " tong da check : " + sshdacheck + " tong live : " + sshlive + " so thread da tao : "+ scanSSH.getCurrentThreadActive() 
+        return "tong ssh : " + tongssh + " tong da check : " + sshdacheck + " tong live : " + sshlive + " so thread da tao : " + scanSSH.getCurrentThreadActive()
                 + " / tong so thread : " + scanSSH.getNumberOfThreads();
-    }
-
-    public List<InfoToConnectSSH> getListInfo(String path) {
-
-        BufferedReader br = null;
-        FileReader fr = null;
-
-        try {
-
-            fr = new FileReader(path);
-            br = new BufferedReader(fr);
-
-            String sCurrentLine;
-
-            br = new BufferedReader(new FileReader(path));
-            int i = 0;
-            while ((sCurrentLine = br.readLine()) != null) {
-                temp.add(sCurrentLine);
-
-                i++;
-            }
-
-        } catch (IOException e) {
-
-            e.printStackTrace();
-
-        } finally {
-
-            try {
-
-                if (br != null) {
-                    br.close();
-                }
-
-                if (fr != null) {
-                    fr.close();
-                }
-
-            } catch (IOException ex) {
-
-                ex.printStackTrace();
-
-            }
-
-        }
-
-        return null;
     }
 
 }

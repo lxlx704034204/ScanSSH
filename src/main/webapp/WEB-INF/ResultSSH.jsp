@@ -19,7 +19,7 @@
         <c:if test="${not empty tongssh}">tongssh : ${tongssh}</c:if>
         <c:if test="${not empty sshdacheck}">sshdacheck : ${sshdacheck}</c:if>
         <c:if test="${not empty sshlive}">sshlive : ${sshlive}</c:if>
-
+        <c:if test="${not empty message}">message : ${message}</c:if>
         <c:if test="${not empty listsInfo}">
             <table id="example2" class="table table-bordered table-hover">
                 <thead>
@@ -63,7 +63,11 @@
             </table>
         </c:if>
 
-
+        <div class="col-xs-12">
+            <label>Save ssh</label>
+            <s:url value="SaveSsh" var="SaveSsh"/>
+            <a href="${SaveSsh}">Save ssh</a>
+        </div>
 
         <div class="col-xs-12">
             <label>Status</label>
