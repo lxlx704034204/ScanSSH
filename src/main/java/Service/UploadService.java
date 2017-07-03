@@ -13,6 +13,7 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
 import java.io.BufferedOutputStream;
+import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -24,6 +25,7 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -147,9 +149,21 @@ public class UploadService {
             byte[] bytes = ObjectToByte(ListsInfo);
 
             Path path = Paths.get("/app/nb-configuration.xml");
-            OutputStream outputStream = channelSftp.put("/var/www/html/wsplateform/range/" + "resultssh"+n+".txt");//remote
+            OutputStream outputStream = channelSftp.put("/var/www/html/wsplateform/range/" + "resultssh" + n + ".txt");//remote
             //write byte to stream
-            outputStream.write(bytes);
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, "UTF-8");
+            BufferedWriter bufferedWriter = new BufferedWriter(outputStreamWriter);
+            for (int i = 0; i < ListsInfo.size(); i++) {
+                bufferedWriter.write(ListsInfo.get(i).getHost() + "|"
+                        + ListsInfo.get(i).getUsername() + "|"
+                        + ListsInfo.get(i).getPassword() + "|"
+                        + ListsInfo.get(i).getCountry() + "|"
+                        + ListsInfo.get(i).getDescription());
+                bufferedWriter.newLine();
+            }
+
+            bufferedWriter.close();
+            //outputStream.write(bytes);
 
             Files.copy(path, outputStream);
 
@@ -194,7 +208,6 @@ public class UploadService {
                 Files.copy(paths, outputStream);
                 outputStream.close();
                 channel.disconnect();
-               
 
                 return message = file.getOriginalFilename();
             }

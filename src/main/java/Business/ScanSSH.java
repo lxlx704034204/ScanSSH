@@ -169,6 +169,9 @@ public class ScanSSH {
             while (true) {
                 Thread.sleep(2000);
                 System.out.println(" CurrentThreadActive: " + CurrentThreadActive);
+                if (CurrentThreadActive == 0) {
+                    break;
+                }
             }
 
         } catch (Exception e) {
@@ -203,7 +206,7 @@ public class ScanSSH {
                         }
 
                     } else {
-
+                        CurrentThreadActive--;
                         break;
                     }
 
