@@ -47,10 +47,8 @@
                 <thead>
                     <tr>
                         <th>stt</th>
-                        <th>host</th>
-                        <th>user</th>
-                        <th>pass</th>
-                        <th>country</th>
+                        <th>info</th>
+                        
                     </tr>
                 </thead>
                 <tbody>
@@ -64,17 +62,9 @@
                             </td>
 
                             <td>
-                                ${lists.host}
+                                ${lists}
                             </td>
-                            <td>
-                                ${lists.username}
-                            </td>
-                            <td>
-                                ${lists.password}
-                            </td>
-                            <td>
-                                ${lists.country}
-                            </td>
+                           
 
 
 

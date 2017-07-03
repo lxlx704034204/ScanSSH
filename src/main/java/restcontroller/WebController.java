@@ -110,7 +110,7 @@ public class WebController {
 
         try {
             //List<InfoToConnectSSH> lists = getInfoService.getListInfoToConnectSSH(readService.readFileFromFtpServer("ftp.lisatthu.heliohost.org", "lisatthu35@lisatthu.heliohost.org", "lisatthu35", name));
-            List<InfoToConnectSSH> lists = getInfoService.getListInfoToConnectSSH(readService.readFileTMPFromSFtpServer(name));
+            List<String> lists = readService.readFileTMPFromSFtpServer(name);
             mm.addAttribute("listsInfo", lists);
 
         } catch (Exception e) {
@@ -149,7 +149,7 @@ public class WebController {
     }
 
     @RequestMapping(value = {"/ResultSSH"}, method = RequestMethod.GET)
-    public String ResultSSH(ModelMap mm ) {
+    public String ResultSSH(ModelMap mm) {
         tongssh = scanSSH.getTotalIps();
         sshdacheck = scanSSH.getTotalIpsChecked();
 
