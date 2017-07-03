@@ -107,7 +107,7 @@ public class WebController {
     public String getListInfo2(ModelMap mm,
             @RequestParam(value = "name") String name) {
         String message = "";
-
+ 
         try {
             //List<InfoToConnectSSH> lists = getInfoService.getListInfoToConnectSSH(readService.readFileFromFtpServer("ftp.lisatthu.heliohost.org", "lisatthu35@lisatthu.heliohost.org", "lisatthu35", name));
             List<String> lists = readService.readFileTMPFromSFtpServer(name);
