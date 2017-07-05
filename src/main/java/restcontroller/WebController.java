@@ -7,6 +7,7 @@ package restcontroller;
 
 import Business.ScanSSH;
 import Pojos.InfoToConnectSSH;
+import Service.DowloadService;
 import Service.GetInfoService;
 import Service.ReadService;
 import Service.UploadService;
@@ -47,7 +48,8 @@ public class WebController {
     GetInfoService getInfoService;
     @Autowired
     ScanSSH scanSSH;
-
+    @Autowired
+    DowloadService dowloadService;
     private static float tongssh = 0;
     private static float sshdacheck = 0;
     private static float sshlive = 0;
@@ -107,7 +109,7 @@ public class WebController {
     public String getListInfo2(ModelMap mm,
             @RequestParam(value = "name") String name) {
         String message = "";
- 
+
         try {
             //List<InfoToConnectSSH> lists = getInfoService.getListInfoToConnectSSH(readService.readFileFromFtpServer("ftp.lisatthu.heliohost.org", "lisatthu35@lisatthu.heliohost.org", "lisatthu35", name));
             List<String> lists = readService.readFileTMPFromSFtpServer(name);
@@ -157,8 +159,11 @@ public class WebController {
             mm.addAttribute("listsInfo", scanSSH.getListsResultIps());
             sshlive = scanSSH.getNumberOfIpsLive();
         }
+
         mm.addAttribute("tongssh", tongssh);
         mm.addAttribute("sshdacheck", sshdacheck);
+        mm.addAttribute("sshdacheck", scanSSH.getCurrentThreadActive()
+        );
         mm.addAttribute("sshlive", sshlive);
         try {
 
@@ -170,12 +175,24 @@ public class WebController {
     }
 
     @RequestMapping(value = "/SaveSsh", method = RequestMethod.GET)
-    public String test2(RedirectAttributes redirectAttrs) {
+    public String SaveSsh(RedirectAttributes redirectAttrs) {
         String message = "";
         try {
             uploadService.uploadFileTempToSFtpServer(scanSSH.getListsResultIps());
             message = "upload thanh cong : so ssh :" + scanSSH.getListsResultIps().size();
 
+        } catch (Exception e) {
+            message = e.getMessage();
+        }
+        redirectAttrs.addFlashAttribute("message", message);
+        return "redirect:/ResultSSH ";
+    }
+
+    @RequestMapping(value = "/dowloadSsh", method = RequestMethod.GET)
+    public String dowloadSsh(RedirectAttributes redirectAttrs) {
+        String message = "";
+        try {
+            message = dowloadService.dowloadFile();
         } catch (Exception e) {
             message = e.getMessage();
         }

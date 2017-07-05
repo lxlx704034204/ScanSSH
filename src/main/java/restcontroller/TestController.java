@@ -44,7 +44,7 @@ public class TestController {
             //get file range
             scanSSH.setListsRange(range);
             scanSSH.setListsUserPass(info);
-            scanSSH.setNumberOfThreads(1);
+            scanSSH.setNumberOfThreads(2);
             scanSSH.StartSetting();
 
             int a = 0;
