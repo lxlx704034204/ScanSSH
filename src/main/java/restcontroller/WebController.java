@@ -113,8 +113,14 @@ public class WebController {
     }
 
     @RequestMapping(value = {"/CheckSsh"}, method = RequestMethod.GET)
-    public String UpdateCheckSsh1() {
+    public String UpdateCheckSsh1(ModelMap mm) {
 
+        try {
+            List<String> lists = getInfoService.getListFileOnSFtpServer();
+            mm.addAttribute("listsFile", lists);
+
+        } catch (Exception e) {
+        }
         return "ScanSSH";
     }
 

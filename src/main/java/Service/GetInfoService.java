@@ -122,10 +122,11 @@ public class GetInfoService {
                 lists.add(entry.getFilename());
             }
             channel.disconnect();
-
+            
             return lists;
         } catch (Exception e) {
             e.getMessage();
+            
         }
         return null;
     }

@@ -34,16 +34,30 @@
                             <input type="text" name="url"  />
                         </div>
                     </div>
+
+
+
                     <div class="box-body">
                         <div class="form-group">
                             <label>ten file range</label>
-                            <input type="text" name="range"  />
+                            <select  name="range">
+                                <c:forEach items="${listsFile}" var="file">
+                                    <option value="${file}">${file}</option>
+                                </c:forEach>
+                            </select>
+
                         </div>
                     </div>
                     <div class="box-body">
                         <div class="form-group">
+
                             <label>ten file user pass</label>
-                            <input type="text" name="userpass"  />
+                            <select  name="userpass">
+                                <c:forEach items="${listsFile}" var="file">
+                                    <option value="${file}">${file}</option>
+                                </c:forEach>
+                            </select>
+
                         </div>
                     </div>
                     <div class="box-body">
@@ -64,6 +78,6 @@
 
 
 
-       
+
     </body>
 </html>
