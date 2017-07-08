@@ -190,11 +190,13 @@ public class UploadService {
                     session.setPassword("ftp123");
                     session.connect();
                 }
-
+                
                 channel = session.openChannel("sftp");
                 channel.connect();
                 channelSftp = (ChannelSftp) channel;
 
+                
+                
                 channelSftp.cd("/var/www/html/wsplateform/range");//local
 
                 //write data to bytes
