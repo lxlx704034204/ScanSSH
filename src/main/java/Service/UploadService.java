@@ -176,6 +176,59 @@ public class UploadService {
         return message;
     }
 
+    public String uploadFileTxtToSFtpServer(List<String> ListsInfo) throws FileNotFoundException {
+
+        Random r = new Random();
+        int n = r.nextInt(9999);
+        //FileInputStream fis = null;
+        // FileOutputStream fos = null;
+        String message = "";
+        String filePath = new File("").getAbsolutePath();
+        filePath.concat("nb-configuration.xml");
+
+        try {
+            //config
+            Channel channel = null;
+            ChannelSftp channelSftp = null;
+            session.setTimeout(15000);
+            if (!session.isConnected()) {
+                session.setPassword("ftp123");
+                session.connect();
+            }
+
+            channel = session.openChannel("sftp");
+            channel.connect();
+            channelSftp = (ChannelSftp) channel;
+
+            channelSftp.cd("/var/www/html/wsplateform/range");//local
+
+            //write data to bytes
+            byte[] bytes = ObjectToByte(ListsInfo);
+
+            Path path = Paths.get("/app/nb-configuration.xml");
+            OutputStream outputStream = channelSftp.put("/var/www/html/wsplateform/range/" + "ListRangeEnable" + n + ".txt");//remote
+            //write byte to stream
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, "UTF-8");
+            BufferedWriter bufferedWriter = new BufferedWriter(outputStreamWriter);
+            for (int i = 0; i < ListsInfo.size(); i++) {
+                bufferedWriter.write(ListsInfo.get(i));
+                bufferedWriter.newLine();
+            }
+
+            bufferedWriter.close();
+            //outputStream.write(bytes);
+
+            Files.copy(path, outputStream);
+
+            channel.disconnect();
+
+            return "filename.txt";
+        } catch (Exception e) {
+            message = e.getMessage();
+        }
+        return message;
+    }
+
     public String uploadFileTempToSFtpServer(MultipartFile file, String path) throws FileNotFoundException {
 
         String message = "";
@@ -190,13 +243,11 @@ public class UploadService {
                     session.setPassword("ftp123");
                     session.connect();
                 }
-                
+
                 channel = session.openChannel("sftp");
                 channel.connect();
                 channelSftp = (ChannelSftp) channel;
 
-                
-                
                 channelSftp.cd("/var/www/html/wsplateform/range");//local
 
                 //write data to bytes
@@ -238,7 +289,7 @@ public class UploadService {
 
     }
 
-    public byte[] ObjectToByte(List<InfoToConnectSSH> ListsInfo) {
+    public byte[] ObjectToByte(List<?> ListsInfo) {
 
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();

@@ -23,35 +23,53 @@
     <body>
         <h1>List file</h1>
         <c:if test="${not empty message}"> ${message}</c:if>
-            <table id="example2" class="table table-bordered table-hover">
-                <thead>
-                    <tr>
-                        <th>Kiểu</th>
-                        <th>Tên File</th>
+        <s:url value="getListInfo" var="getListInfo"/>
+        <s:url value="dowloadFile" var="dowloadFile"/>
+        <s:url value="deleteFile" var="deleteFile"/>
 
-                    </tr>
-                </thead>
-                <tbody>
+        <table id="example2" class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>Kiểu</th>
+                    <th>Tên File</th>
 
-                <c:forEach var="listsFile" items="${listsFile}" varStatus="status">
-                    <c:set value="${status.index}" var="index"/>
-                    <tr>
+                </tr>
+            </thead>
+            <tbody>
 
-                        <td>
-                            ${status.index}
-                        </td>
+                <c:forEach var="File" items="${listsFile}" varStatus="status">
+                    <form:form  method="POST">
+                        <c:set value="${status.index}" var="index"/>
+                        <tr>
+                    <input type="hidden" value="${File}" name="name"/>
+                    <td>
+                        ${status.index}
+                    </td>
 
-                        <td>
-                            ${listsFile}
-                        </td>
+                    <td>
+                        ${File}
+                    </td>
+                    <td>
+                        <button class="btn btn-primary" type="submit" onclick="form.action = '<c:out value="${deleteFile}"/>';" >xoa</button>
+                    </td>
+                    <td>
+                        <button class="btn btn-primary" type="submit" onclick="form.action = '<c:out value="${dowloadFile}"/>';" >dowlad</button>
+                    </td>
+                    <td>
+                        <button class="btn btn-primary" type="submit" onclick="form.action = '<c:out value="${getListInfo}"/>';" >Xem</button>
+
+                    </td>
 
 
 
-                    </tr>
-                </c:forEach>
-            </tbody>
+                </tr>
+            </form:form>
+        </c:forEach>
+    </tbody>
 
-        </table>
+</table>
 
-    </body>
+
+
+</body>
 </html>

@@ -1,9 +1,3 @@
-<%-- 
-    Document   : ListFile
-    Created on : Jun 30, 2017, 1:38:56 AM
-    Author     : Alex
---%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="s" uri="http://www.springframework.org/tags" %>
@@ -21,16 +15,18 @@
         <title>JSP Page</title>
     </head>
     <body>
-        <h1>Check info</h1>
-        <s:url value="getListInfo" var="getListInfo"/>
-        <c:if test="${not empty message}"> ${message}</c:if>
+        <h1>Result ssh!</h1>
+        <c:if test="${not empty tongip}">tongIp : ${tongip}</c:if>
+        <c:if test="${not empty ipdacheck}">ipdacheck : ${ipdacheck}</c:if>
+        <c:if test="${not empty iplive}">iplive : ${iplive}</c:if>
+        <c:if test="${not empty threadactive}">tong thread dang active : ${threadactive}</c:if>
+        <c:if test="${not empty message}">message : ${message}</c:if>
         <c:if test="${not empty listsInfo}">
             <table id="example2" class="table table-bordered table-hover">
                 <thead>
                     <tr>
                         <th>stt</th>
-                        <th>info</th>
-                        
+                        <th>host</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -46,7 +42,7 @@
                             <td>
                                 ${lists}
                             </td>
-                           
+
 
 
 
@@ -56,5 +52,44 @@
 
             </table>
         </c:if>
+        <div class="col-xs-12">
+            <label>Status</label>
+            <div id="StatusCheck">
+
+            </div>
+        </div>
+        <script lang="javascript">
+            function ajax_call() {
+                var temp = "${sessionScope.url}";
+                if (temp === "") {
+
+
+                } else {
+                    $.ajax({
+                        type: "GET",
+                        url: temp,
+                        timeout: 100000,
+                        success: function (data) {
+                            console.log("SUCCESS: ", data);
+                            display(data);
+                        },
+                        error: function (e) {
+                            console.log("ERROR: ", e);
+                            display(e);
+                        }
+                    });
+
+                }
+
+
+            }
+
+            var interval = 2000; // set time 
+
+            setInterval(ajax_call, interval);
+            function display(data) {
+                $('#StatusCheck').html(data);
+            }
+        </script>
     </body>
 </html>

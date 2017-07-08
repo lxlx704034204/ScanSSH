@@ -32,14 +32,19 @@
             <a href="${getListFile}">get List File</a>
         </div>
         <div class="col-xs-12">
-            <s:url value="getListInfo" var="getListInfo"/>
-            <label>get List Info</label>
-            <a href="${getListInfo}">get List Info</a>
-        </div>
-        <div class="col-xs-12">
             <s:url value="CheckSsh" var="CheckSsh"/>
             <label>CheckSsh</label>
             <a href="${CheckSsh}">CheckSsh</a>
+        </div>
+        <div class="col-xs-12">
+            <s:url value="scanPort" var="scanPort"/>
+            <label>ScanPort22</label>
+            <a href="${scanPort}">scanPort</a>
+        </div>
+        <div class="col-xs-12">
+            <s:url value="ResultScanPort" var="ResultScanPort"/>
+            <label>ResultScanPort</label>
+            <a href="${ResultScanPort}">ResultScanPort</a>
         </div>
         <div class="col-xs-12">
             <s:url value="ResultSSH" var="ResultSSH"/>

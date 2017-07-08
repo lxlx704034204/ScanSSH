@@ -21,6 +21,8 @@ public class DowloadService {
 
     @Autowired
     ScanSSH scanSSH;
+    @Autowired
+    ReadService readService;
 
     public String dowloadFile() throws IOException {
         Random rd = new Random();
@@ -43,6 +45,34 @@ public class DowloadService {
             }
             bufferedWriter.close();
             return "D:\\KetQuaSSH" + temp + ".txt";
+        } catch (Exception e) {
+            e.getMessage();
+            bufferedWriter.close();
+        }
+        return null;
+    }
+
+    public String dowloadFileFromSFTPServer(String filename) throws IOException {
+        Random rd = new Random();
+        int temp = rd.nextInt(9999);
+        BufferedWriter bufferedWriter = null;
+        List<String> lists = null;
+        try {
+            //doc file sftp
+            lists = readService.readFileTMPFromSFtpServer(filename);
+
+            //ghi file local
+            FileOutputStream outputStream = new FileOutputStream("D:\\" + filename);
+
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, "UTF-8");
+            bufferedWriter = new BufferedWriter(outputStreamWriter);
+
+            for (int i = 0; i < lists.size(); i++) {
+                bufferedWriter.write(lists.get(i));
+                bufferedWriter.newLine();
+            }
+            bufferedWriter.close();
+            return "D:\\" + filename;
         } catch (Exception e) {
             e.getMessage();
             bufferedWriter.close();

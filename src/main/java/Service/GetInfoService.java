@@ -117,6 +117,7 @@ public class GetInfoService {
             channel.connect();
             channelSftp = (ChannelSftp) channel;
             channelSftp.cd("/var/www/html/wsplateform/range");
+            
             Vector<ChannelSftp.LsEntry> list = channelSftp.ls("*.txt");
             for (ChannelSftp.LsEntry entry : list) {
                 lists.add(entry.getFilename());

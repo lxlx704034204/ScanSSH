@@ -5,11 +5,10 @@
  */
 package Bean;
 
-import com.jcraft.jsch.Channel;
-import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
+import java.net.Socket;
 import java.util.Properties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,6 +26,12 @@ public class ConfigSpring {
     JSch sshClient() {
 
         return new JSch();
+    }
+
+    @Bean
+    Socket Socket() {
+
+        return new Socket();
     }
 
     @Bean
@@ -49,7 +54,5 @@ public class ConfigSpring {
 
         return session;
     }
-    
-    
-    
+
 }

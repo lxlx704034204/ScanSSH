@@ -10,6 +10,7 @@ import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -17,6 +18,7 @@ import java.net.InetSocketAddress;
 
 import java.net.MalformedURLException;
 import java.net.Proxy;
+import java.net.Socket;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -107,40 +109,19 @@ public class TestController {
     }
 
     @RequestMapping(value = "/testport", method = RequestMethod.GET)
-    public String testport() throws MalformedURLException {
-        int lport = 1080;
-        String rhost = "14.161.6.63";
-        int rport = 80;
-        Session session = null;
+    public String testport() throws MalformedURLException, IOException {
+
+        Socket soket = new Socket();
         try {
-
-            String host = "14.161.6.63";
-            String user = "root";
-            String password = "admin";
-            int port = 22;
-            JSch s = new JSch();
-            session = s.getSession(user, host, port);
-            session.setPassword(password);
-            session.setTimeout(15000);
-            session.setConfig("StrictHostKeyChecking", "no");
-            session.setConfig("GSSAPIAuthentication", "no");
-            session.setConfig("kex", "diffie-hellman-group1-sha1,diffie-hellman-group14-sha1,diffie-hellman-group-exchange-sha1,diffie-hellman-group-exchange-sha256");
-            session.setConfig("server_host_key", "ssh-dss,ssh-rsa,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521");
-            session.setConfig("cipher.c2s",
-                    "blowfish-cbc,3des-cbc,aes128-cbc,aes192-cbc,aes256-cbc,aes128-ctr,aes192-ctr,aes256-ctr,3des-ctr,arcfour,arcfour128,arcfour256");
-
-            session.connect();
-            
-            
-            ChannelExec channel = (ChannelExec) session.openChannel("exec");
+            soket.connect(new InetSocketAddress("117.253.105.180", 22), 15000);
+            soket.close();
 
 
-            int a = 0;
         } catch (Exception e) {
-            session.disconnect();
             e.getMessage();
-
+            soket.close();
         }
+
         return "test ";
     }
 

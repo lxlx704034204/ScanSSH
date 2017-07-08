@@ -5,8 +5,9 @@
  */
 package restcontroller;
 
-import Business.ScanSSH;
+import Business.*;
 import Pojos.InfoToConnectSSH;
+import Service.DeleteService;
 import Service.DowloadService;
 import Service.GetInfoService;
 import Service.ReadService;
@@ -42,7 +43,11 @@ public class WebController {
     @Autowired
     ScanSSH scanSSH;
     @Autowired
+    ScanPort22 scanPort22;
+    @Autowired
     DowloadService dowloadService;
+    @Autowired
+    DeleteService deleteService;
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String greeding() {
@@ -124,28 +129,6 @@ public class WebController {
         return "ScanSSH";
     }
 
-    @RequestMapping(value = {"/CheckSsh"}, method = RequestMethod.POST)
-    public String UpdateCheckSsh2(
-            @RequestParam("url") String url,
-            @RequestParam("range") String range,
-            @RequestParam("userpass") String userpass,
-            @RequestParam("thread") int thread,
-            HttpServletRequest request, HttpSession session, ModelMap mm
-    ) {
-        try {
-            scanSSH.setListsRange(readService.readFileTMPFromSFtpServer(range));
-            scanSSH.setListsUserPass(getInfoService.getListUserPass(readService.readFileTMPFromSFtpServer(userpass)));
-            scanSSH.setNumberOfThreads(thread);
-            scanSSH.StartSetting();
-
-        } catch (Exception e) {
-            e.getMessage();
-        }
-
-        session.setAttribute("url", url + "/UpdateCheckSsh");
-        return "ResultSSH";
-    }
-
     @RequestMapping(value = {"/ResultSSH"}, method = RequestMethod.GET)
     public String ResultSSH(ModelMap mm) {
         float tongssh = scanSSH.getTotalIps();
@@ -164,6 +147,24 @@ public class WebController {
         return "ResultSSH";
     }
 
+    @RequestMapping(value = {"/ResultScanPort"}, method = RequestMethod.GET)
+    public String ResultScanPort(ModelMap mm) {
+        float tongip = scanPort22.getTotalIps();
+        float ipdacheck = scanPort22.getTotalIpsChecked();
+        float iplive = scanPort22.getNumberOfIpsLive();
+
+        if (scanPort22.getListsIP() != null && scanPort22.getListsIP().size() > 0) {
+            mm.addAttribute("listsInfo", scanPort22.getListsIP());
+        }
+
+        mm.addAttribute("tongip", tongip);
+        mm.addAttribute("ipdacheck", ipdacheck);
+        mm.addAttribute("threadactive", scanPort22.getCurrentThreadActive());
+        mm.addAttribute("iplive", iplive);
+
+        return "ResultScanPort";
+    }
+
     @RequestMapping(value = "/SaveSsh", method = RequestMethod.GET)
     public String SaveSsh(RedirectAttributes redirectAttrs) {
         String message = "";
@@ -176,6 +177,34 @@ public class WebController {
         }
         redirectAttrs.addFlashAttribute("message", message);
         return "redirect:/ResultSSH ";
+    }
+
+    @RequestMapping(value = "/dowloadFile", method = RequestMethod.POST)
+    public String dowloadFile(
+            RedirectAttributes redirectAttrs,
+            @RequestParam(value = "name") String name) {
+        String message = "";
+        try {
+            message = dowloadService.dowloadFileFromSFTPServer(name);
+        } catch (Exception e) {
+            message = e.getMessage();
+        }
+        redirectAttrs.addFlashAttribute("message", message);
+        return "redirect:/getListFile ";
+    }
+
+    @RequestMapping(value = "/deleteFile", method = RequestMethod.POST)
+    public String deleteFile(
+            RedirectAttributes redirectAttrs,
+            @RequestParam(value = "name") String name) {
+        String message = "";
+        try {
+            message = deleteService.delFileOnSFtpServer(name);
+        } catch (Exception e) {
+            message = e.getMessage();
+        }
+        redirectAttrs.addFlashAttribute("message", message);
+        return "redirect:/getListFile ";
     }
 
     @RequestMapping(value = "/dowloadSsh", method = RequestMethod.GET)
