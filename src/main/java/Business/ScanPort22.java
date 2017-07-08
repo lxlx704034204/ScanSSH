@@ -42,7 +42,7 @@ public class ScanPort22 {
     private String String_IpRangeEndFocus = "";
     private long Long_IpRangeFocus = 0;
     private long Long_IpRangeEndFocus = 0;
-    private int TimeOut = 30;
+    private int TimeOut = 6;
     private int CountIpRange = 0;
     private int IndexOfListRange = 0;
     private boolean flag = true;
@@ -229,7 +229,7 @@ public class ScanPort22 {
     public byte CHECK_LIVE(String STR_IP) throws IOException {
         Socket soket= new Socket();
         try {
-            soket.connect(new InetSocketAddress(STR_IP, 22), 15000);
+            soket.connect(new InetSocketAddress(STR_IP, 22), TimeOut*1000);
             soket.close();
             NumberOfIpsLive++;
             return 1;
