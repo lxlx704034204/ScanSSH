@@ -6,43 +6,25 @@
 package restcontroller;
 
 import Business.ScanSSH;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
-import org.springframework.context.annotation.Scope;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+
 import org.springframework.web.bind.annotation.RestController;
 import Pojos.*;
 import Service.ReadService;
 import Service.UploadService;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
-import java.io.FileInputStream;
-import java.io.FileReader;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
+
 import javax.servlet.ServletContext;
-import javax.tools.FileObject;
-import org.apache.commons.vfs2.FileSystemOptions;
-import org.apache.commons.vfs2.Selectors;
-import org.apache.commons.vfs2.impl.StandardFileSystemManager;
-import org.apache.commons.vfs2.provider.sftp.SftpFileSystemConfigBuilder;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 @RestController
@@ -58,7 +40,6 @@ public class ServiceController {
     ReadService readService;
     @Autowired
     ScanSSH scanSSH;
-    static Properties props;
     private static float tongssh = 0;
     private static float sshdacheck = 0;
     private static float sshlive = 0;

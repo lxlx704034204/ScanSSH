@@ -8,6 +8,8 @@ package Business;
 import Pojos.*;
 import Service.IPService;
 import Service.UploadService;
+import com.jcraft.jsch.Channel;
+import com.jcraft.jsch.ChannelDirectTCPIP;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
@@ -51,6 +53,8 @@ public class ScanSSH {
     private int CountIpRange = 0;
     private int IndexOfListRange = 0;
     private boolean flag = true;
+    private String HostCheckFresh = "checkip.dyndns.org";
+    private int PortCheckFresh = 80;
     @Autowired
     IPService iPService;
     @Autowired
@@ -170,7 +174,7 @@ public class ScanSSH {
         try {
             while (true) {
                 Thread.sleep(2000);
-                System.out.println(" CurrentThreadActive: " + CurrentThreadActive);
+                // System.out.println(" CurrentThreadActive: " + CurrentThreadActive);
                 if (CurrentThreadActive == 0) {
                     break;
                 }
@@ -313,34 +317,23 @@ public class ScanSSH {
     }
 
     public void Check_ssh(Session session, int id, String pass) throws JSchException {
-        Session session1 = null;
+        
         try {
             //check connect ip
             session.setPassword(pass);
-            session.setPortForwardingL(1080 + id, "12.170.92.104", 22);
             session.connect();
-            session.openChannel("direct-tcpip");
+
             //check fresh ip
-            session1 = sshClient.getSession("webadmin", "localhost", 1080 + id);
-            session1.setTimeout(TimeOut * 1000);
-            session1.setConfig("StrictHostKeyChecking", "no");
-            session1.setConfig("GSSAPIAuthentication", "no");
-            session1.setConfig("kex", "diffie-hellman-group1-sha1,diffie-hellman-group14-sha1,diffie-hellman-group-exchange-sha1,diffie-hellman-group-exchange-sha256");
-            session1.setConfig("server_host_key", "ssh-dss,ssh-rsa,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521");
-            session1.setConfig("cipher.c2s",
-                    "blowfish-cbc,3des-cbc,aes128-cbc,aes192-cbc,aes256-cbc,aes128-ctr,aes192-ctr,aes256-ctr,3des-ctr,arcfour,arcfour128,arcfour256");
-            session1.setPassword("webadmin123");
-            session1.connect();
-            session1.disconnect();
-            session.delPortForwardingL(1080 + id);
+            Channel channel = session.openChannel("direct-tcpip");
+            ((ChannelDirectTCPIP) channel).setHost(HostCheckFresh);
+            ((ChannelDirectTCPIP) channel).setPort(PortCheckFresh);
+
+            channel.connect(10000);
+
             Bit_CheckIps[id] = true;
             NumberOfIpsLive++;
         } catch (Exception ex) {
             ex.getMessage();
-            session.delPortForwardingL(1080 + id);
-            if (session1 != null) {
-                session1.disconnect();
-            }
 
         }
 

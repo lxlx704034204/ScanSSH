@@ -11,27 +11,20 @@ import Service.DowloadService;
 import Service.GetInfoService;
 import Service.ReadService;
 import Service.UploadService;
-import java.awt.image.BufferedImage;
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.List;
-import javax.imageio.ImageIO;
+
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.PathVariable;
+
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -50,9 +43,6 @@ public class WebController {
     ScanSSH scanSSH;
     @Autowired
     DowloadService dowloadService;
-    private static float tongssh = 0;
-    private static float sshdacheck = 0;
-    private static float sshlive = 0;
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String greeding() {
@@ -152,25 +142,19 @@ public class WebController {
 
     @RequestMapping(value = {"/ResultSSH"}, method = RequestMethod.GET)
     public String ResultSSH(ModelMap mm) {
-        tongssh = scanSSH.getTotalIps();
-        sshdacheck = scanSSH.getTotalIpsChecked();
+        float tongssh = scanSSH.getTotalIps();
+        float sshdacheck = scanSSH.getTotalIpsChecked();
+        float sshlive = scanSSH.getNumberOfIpsLive();
 
         if (scanSSH.getListsResultIps() != null && scanSSH.getListsResultIps().size() > 0) {
             mm.addAttribute("listsInfo", scanSSH.getListsResultIps());
-            sshlive = scanSSH.getNumberOfIpsLive();
         }
 
         mm.addAttribute("tongssh", tongssh);
         mm.addAttribute("sshdacheck", sshdacheck);
-        mm.addAttribute("sshdacheck", scanSSH.getCurrentThreadActive()
-        );
+        mm.addAttribute("threadactive", scanSSH.getCurrentThreadActive());
         mm.addAttribute("sshlive", sshlive);
-        try {
 
-        } catch (Exception e) {
-            e.getMessage();
-
-        }
         return "ResultSSH";
     }
 

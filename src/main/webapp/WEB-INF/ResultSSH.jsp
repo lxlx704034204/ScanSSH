@@ -19,7 +19,7 @@
         <c:if test="${not empty tongssh}">tongssh : ${tongssh}</c:if>
         <c:if test="${not empty sshdacheck}">sshdacheck : ${sshdacheck}</c:if>
         <c:if test="${not empty sshlive}">sshlive : ${sshlive}</c:if>
-        <c:if test="${not empty sshlive}">tong thread : ${sshlive}</c:if>
+        <c:if test="${not empty threadactive}">tong thread dang active : ${threadactive}</c:if>
         <c:if test="${not empty message}">message : ${message}</c:if>
         <c:if test="${not empty listsInfo}">
             <table id="example2" class="table table-bordered table-hover">
