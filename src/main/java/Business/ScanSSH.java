@@ -26,7 +26,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class ScanSSH {
 
+
     private static final int MaxThread = 20000;
+
     //thong tin ve ssh se duoc cung cap cho controller
     private long TotalIps = 0;
     private long TotalIpsChecked = 0;
@@ -126,29 +128,29 @@ public class ScanSSH {
 
     }
 
-    public void CheckStopAndUpload() throws FileNotFoundException {
+    public void CheckStopAndUpload() throws FileNotFoundException, InterruptedException {
 //true
-        if (thread.length == NumberOfThreads) {
-            while (true) {
-                try {
-                    if (!flag) {
-                        uploadService.uploadFileTempToSFtpServer(ListsResultIps);
-                        flag = true;
-                        break;
-                    } else {
-                        //false
-                        flag = false;
-                        for (int i = 0; i < thread.length; i++) {
 
-                            flag = flag || thread[i].isAlive();
-                        }
+        while (true) {
+            Thread.sleep(30000);
+            try {
+                if (!flag) {
+                    uploadService.uploadFileTempToSFtpServer(ListsResultIps);
+                    flag = true;
+                    break;
+                } else {
+                    //false
+                    flag = false;
+                    for (int i = 0; i < thread.length; i++) {
 
+                        flag = flag || thread[i].isAlive();
                     }
-                } catch (Exception e) {
-                    e.getMessage();
-                }
 
+                }
+            } catch (Exception e) {
+                e.getMessage();
             }
+
         }
 
     }
@@ -317,7 +319,7 @@ public class ScanSSH {
     }
 
     public void Check_ssh(Session session, int id, String pass) throws JSchException {
-        
+
         try {
             //check connect ip
             session.setPassword(pass);
