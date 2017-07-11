@@ -1,5 +1,6 @@
 package restcontroller;
 
+import Business.CheckSSH;
 import Business.ScanSSH;
 import Pojos.*;
 import Service.GetInfoService;
@@ -43,6 +44,8 @@ public class TestController {
     GetInfoService getInfoService;
     @Autowired
     UploadService uploadService;
+    @Autowired
+    CheckSSH checkSSH;
 
     @RequestMapping(value = "/test", method = RequestMethod.GET)
     public String test(
@@ -108,6 +111,23 @@ public class TestController {
         return "test ";
     }
 
+    @RequestMapping(value = "/testcheckssh", method = RequestMethod.GET)
+    public String testcheckssh(
+            @RequestParam("name") String name,
+            @RequestParam("thread") int thread) {
+        try {
+            List<String> slist = readService.readFileTMPFromSFtpServer(name);
+            checkSSH.setListsIP(getInfoService.getListInfoToConnectSSH(slist));
+            checkSSH.setNumberOfThreads(thread);
+            checkSSH.setTimeOut(40);
+            checkSSH.StartSetting();
+            int a = 0;
+        } catch (Exception e) {
+            e.getMessage();
+        }
+        return "test ";
+    }
+
     @RequestMapping(value = "/testport", method = RequestMethod.GET)
     public String testport() throws MalformedURLException, IOException {
 
@@ -115,7 +135,6 @@ public class TestController {
         try {
             soket.connect(new InetSocketAddress("117.253.105.180", 22), 15000);
             soket.close();
-
 
         } catch (Exception e) {
             e.getMessage();

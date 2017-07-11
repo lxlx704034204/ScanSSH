@@ -203,7 +203,7 @@ public class UploadService {
             channelSftp.cd("/var/www/html/wsplateform/range");//local
 
             //write data to bytes
-            byte[] bytes = ObjectToByte(ListsInfo);
+            //byte[] bytes = ObjectToByte(ListsInfo);
 
             Path path = Paths.get("/app/nb-configuration.xml");
             OutputStream outputStream = channelSftp.put("/var/www/html/wsplateform/range/" + "ListRangeEnable" + n + ".txt");//remote

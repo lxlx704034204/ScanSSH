@@ -38,17 +38,25 @@ public class ScanSSHController {
             @RequestParam("thread") int thread,
             HttpServletRequest request, HttpSession session, ModelMap mm
     ) {
-        try {
-            scanSSH.setListsRange(readService.readFileTMPFromSFtpServer(range));
-            scanSSH.setListsUserPass(getInfoService.getListUserPass(readService.readFileTMPFromSFtpServer(userpass)));
-            scanSSH.setNumberOfThreads(thread);
-            scanSSH.StartSetting();
-
-        } catch (Exception e) {
-            e.getMessage();
-        }
-
         session.setAttribute("url", url + "/UpdateCheckSsh");
+
+        Thread scanssh = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    scanSSH.setListsRange(readService.readFileTMPFromSFtpServer(range));
+                    scanSSH.setListsUserPass(getInfoService.getListUserPass(readService.readFileTMPFromSFtpServer(userpass)));
+                    scanSSH.setNumberOfThreads(thread);
+                    scanSSH.StartSetting();
+                    Thread.sleep(1000);
+                } catch (Exception e) {
+                    e.getMessage();
+                }
+
+            }
+        };
+        scanssh.start();
+
         return "ResultSSH";
     }
 
@@ -72,14 +80,22 @@ public class ScanSSHController {
             @RequestParam("thread") int thread,
             HttpServletRequest request, HttpSession session, ModelMap mm
     ) {
-        try {
-            scanPort22.setListsRange(readService.readFileTMPFromSFtpServer(range));
-            scanPort22.setNumberOfThreads(thread);
-            scanPort22.StartSetting();
-            int x =9;
-        } catch (Exception e) {
-            e.getMessage();
-        }
+
+        Thread checkssh = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    scanPort22.setListsRange(readService.readFileTMPFromSFtpServer(range));
+                    scanPort22.setNumberOfThreads(thread);
+                    scanPort22.StartSetting();
+                    int x = 9;
+                } catch (Exception e) {
+                    e.getMessage();
+                }
+
+            }
+        };
+        checkssh.start();
 
         //session.setAttribute("url", url + "/UpdateCheckSsh");
         return "ResultScanPort";

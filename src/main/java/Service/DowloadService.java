@@ -7,12 +7,25 @@ package Service;
 
 import Business.ScanSSH;
 import Pojos.InfoToConnectSSH;
+import com.jcraft.jsch.Channel;
+import com.jcraft.jsch.ChannelSftp;
+import com.jcraft.jsch.Session;
+import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.List;
 import java.util.Random;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +36,10 @@ public class DowloadService {
     ScanSSH scanSSH;
     @Autowired
     ReadService readService;
+    @Autowired
+    ServletContext servletContext;
+    @Autowired
+    Session session;
 
     public String dowloadFile() throws IOException {
         Random rd = new Random();
@@ -52,7 +69,7 @@ public class DowloadService {
         return null;
     }
 
-    public String dowloadFileFromSFTPServer(String filename) throws IOException {
+    public String dowloadFileFromSFTPServer1(String filename) throws IOException {
         Random rd = new Random();
         int temp = rd.nextInt(9999);
         BufferedWriter bufferedWriter = null;
@@ -68,15 +85,79 @@ public class DowloadService {
             bufferedWriter = new BufferedWriter(outputStreamWriter);
 
             for (int i = 0; i < lists.size(); i++) {
+
                 bufferedWriter.write(lists.get(i));
                 bufferedWriter.newLine();
             }
             bufferedWriter.close();
             return "D:\\" + filename;
         } catch (Exception e) {
-            e.getMessage();
+
+            System.out.println(e.getMessage());
             bufferedWriter.close();
         }
         return null;
     }
+
+    public String dowloadFileFromSFTPServer(String filename, HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
+
+        InputStream inputStream = null;
+        OutputStream outStream = null;
+        int BUFFER_SIZE = 4096;
+        try {
+            //doc file sftp
+            Channel channel = null;
+            ChannelSftp channelSftp = null;
+            session.setTimeout(15000);
+            if (!session.isConnected()) {
+                session.setPassword("ftp123");
+                session.connect();
+            }
+
+            channel = session.openChannel("sftp");
+            channel.connect();
+            channelSftp = (ChannelSftp) channel;
+
+            inputStream = channelSftp.get("/var/www/html/wsplateform/range/" + filename);
+
+            // get MIME type of the file
+            String mimeType = null;
+            if (mimeType == null) {
+                // set to binary type if MIME mapping not found
+                mimeType = "application/octet-stream";
+            }
+
+            // set content attributes for the response
+            response.setContentType(mimeType);
+            //response.setContentLength((int) lists.size());
+
+            // set headers for the response
+            String headerKey = "Content-Disposition";
+            String headerValue = String.format("attachment; filename=\"%s\"",
+                    filename);
+            response.setHeader(headerKey, headerValue);
+
+            // get output stream of the response
+            outStream = response.getOutputStream();
+
+            // write bytes read from the input stream into the output stream
+            byte[] buffer = new byte[BUFFER_SIZE];
+            int bytesRead = -1;
+
+            // write bytes read from the input stream into the output stream
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outStream.write(buffer, 0, bytesRead);
+            }
+
+            inputStream.close();
+            outStream.close();
+
+        } catch (Exception e) {
+            e.getMessage();
+        }
+        return null;
+    }
+
+   
 }

@@ -16,6 +16,7 @@ import java.util.List;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -182,15 +183,19 @@ public class WebController {
     @RequestMapping(value = "/dowloadFile", method = RequestMethod.POST)
     public String dowloadFile(
             RedirectAttributes redirectAttrs,
-            @RequestParam(value = "name") String name) {
+            @RequestParam(value = "name") String name,
+            HttpServletRequest request,
+            HttpServletResponse response) {
         String message = "";
         try {
-            message = dowloadService.dowloadFileFromSFTPServer(name);
+            
+            dowloadService.dowloadFileFromSFTPServer(name, request, response);
+            Thread.sleep(1000);
         } catch (Exception e) {
             message = e.getMessage();
         }
         redirectAttrs.addFlashAttribute("message", message);
-        return "redirect:/getListFile ";
+        return "ListFile";
     }
 
     @RequestMapping(value = "/deleteFile", method = RequestMethod.POST)

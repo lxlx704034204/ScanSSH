@@ -19,13 +19,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.sound.midi.MidiDevice;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ScanSSH {
-
+public class CheckSSH {
 
     private static final int MaxThread = 20000;
 
@@ -41,19 +41,12 @@ public class ScanSSH {
 
     private Thread[] thread;
     private Thread ThreadCheckStop;
-    private List<RangeIp> ListsRangeIp;
-    private List<String> ListsRange; // truyen vao tu controller
     private List<InfoToConnectSSH> ListsResultIps = new ArrayList<>();
-    private List<InfoToConnectSSH> ListsUserPass; //truyen vao tu controller
+    private List<InfoToConnectSSH> ListsIP; //truyen vao tu controller
     private boolean[] Bit_CheckIps;
-    private int TotalRange = 0;
-    private String String_IpRangeFocus = "";
-    private String String_IpRangeEndFocus = "";
-    private long Long_IpRangeFocus = 0;
-    private long Long_IpRangeEndFocus = 0;
     private int TimeOut = 30;
-    private int CountIpRange = 0;
-    private int IndexOfListRange = 0;
+    private int CountIp = 0;
+    private int TotalRange = 0;
     private boolean flag = true;
     private String HostCheckFresh = "checkip.dyndns.org";
     private int PortCheckFresh = 80;
@@ -67,18 +60,9 @@ public class ScanSSH {
     //khoi tao cac gia tri ban dau
     public void StartSetting() throws InterruptedException {
         String Message = "";
-        //tao list range ip
-        ListsRangeIp = iPService.getListRange(ListsRange);
-        //tinh tong range
-        TotalRange = ListsRangeIp.size();
+        ListsResultIps = new ArrayList<>();
         //tinh tong ip
-
-        TotalIps = iPService.getTotalIps(ListsRangeIp);
-        //
-        if (ListsRangeIp == null) {
-            Message = "khong co du lieu";
-            return;
-        }
+        TotalIps = ListsIP.size();
         //
         if (NumberOfThreads > MaxThread) {
             Message = "thread qua nhieu";
@@ -188,56 +172,36 @@ public class ScanSSH {
     }
 
     public void Check_USER_PASS_START(int id_thread) {
-        String S_IpBeginTemp = "";
-        long L_IpEndTemp = 0;
-        long L_IpBeginTemp = 0;
+
+        InfoToConnectSSH info = new InfoToConnectSSH();
         try {
             while (true) {
                 synchronized (syncObj) {
                     //kiem tra con range trong list range khong
-                    if (IndexOfListRange < TotalRange) {
-
-                        Long_IpRangeEndFocus = iPService.ipToLong2(ListsRangeIp.get(IndexOfListRange).getRangeEnd());
-                        Long_IpRangeFocus = iPService.ipToLong2(ListsRangeIp.get(IndexOfListRange).getRangeBegin()) + CountIpRange;
-                        //ip con trong range khong con thi lam
-                        S_IpBeginTemp = iPService.longToIp2(Long_IpRangeFocus);
-                        L_IpEndTemp = Long_IpRangeEndFocus;
-                        L_IpBeginTemp = Long_IpRangeFocus;
-                        if (Long_IpRangeFocus <= Long_IpRangeEndFocus) {
-
-                            CountIpRange++;
-                            TotalIpsChecked++;
-                        } else {
-                            //het ip trong range , doi sang range tiep theo
-                            IndexOfListRange++;
-                            CountIpRange = 0;
-                        }
-
+                    if (CountIp <= TotalIps) {
+                        info = ListsIP.get(CountIp);
+                        CountIp++;
                     } else {
                         CurrentThreadActive--;
                         break;
                     }
 
                 }
-                
-                if (L_IpBeginTemp <= L_IpEndTemp) {
-                    for (int i = 0; i < ListsUserPass.size(); i++) {
-                        byte check = CHECK_LIVE(S_IpBeginTemp, ListsUserPass.get(i).getUsername(), ListsUserPass.get(i).getPassword(), id_thread);
-                        System.out.println("ip :" + S_IpBeginTemp + " user :" + ListsUserPass.get(i).getUsername() + " pass : " + ListsUserPass.get(i).getPassword());
-                        if (check == 1) {
 
-                            InfoToConnectSSH info = new InfoToConnectSSH();
-                            info.setHost(S_IpBeginTemp);
-                            info.setUsername(ListsUserPass.get(i).getUsername());
-                            info.setPassword(ListsUserPass.get(i).getPassword());
+                byte check = CHECK_LIVE(info.getHost(), info.getUsername(), info.getPassword(), id_thread);
+                TotalIpsChecked++;
+                System.out.println("ip :" + info.getHost() + " user :" + info.getUsername() + " pass : " + info.getPassword());
+                if (check == 1) {
 
-                            ListsResultIps.add(info);
+                    InfoToConnectSSH info1 = new InfoToConnectSSH();
+                    info1.setHost(info.getHost());
+                    info1.setUsername(info.getUsername());
+                    info1.setPassword(info.getPassword());
 
-                            break;
-                        }
-                    }
+                    ListsResultIps.add(info1);
+
                 }
-               
+
             }
         } catch (Exception e) {
             e.getMessage();
@@ -279,8 +243,10 @@ public class ScanSSH {
                 public void run() {
                     try {
                         Check_ssh(s, id, pass);
+
                     } catch (JSchException ex) {
-                        Logger.getLogger(ScanSSH.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(ScanSSH.class
+                                .getName()).log(Level.SEVERE, null, ex);
                     }
                 }
             };
@@ -358,14 +324,6 @@ public class ScanSSH {
         this.NumberOfThreads = NumberOfThreads;
     }
 
-    public void setListsRange(List<String> ListsRange) {
-        this.ListsRange = ListsRange;
-    }
-
-    public void setListsUserPass(List<InfoToConnectSSH> ListsUserPass) {
-        this.ListsUserPass = ListsUserPass;
-    }
-
     public List<InfoToConnectSSH> getListsResultIps() {
         return ListsResultIps;
     }
@@ -376,6 +334,22 @@ public class ScanSSH {
 
     public int getCurrentThreadActive() {
         return CurrentThreadActive;
+    }
+
+    public List<InfoToConnectSSH> getListsIP() {
+        return ListsIP;
+    }
+
+    public void setListsIP(List<InfoToConnectSSH> ListsIP) {
+        this.ListsIP = ListsIP;
+    }
+
+    public int getTimeOut() {
+        return TimeOut;
+    }
+
+    public void setTimeOut(int TimeOut) {
+        this.TimeOut = TimeOut;
     }
 
     public Thread[] getThread() {
