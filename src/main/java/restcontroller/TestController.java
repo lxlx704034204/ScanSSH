@@ -1,6 +1,6 @@
 package restcontroller;
 
-import Business.CheckSSH;
+import Business.CheckSSHLive;
 import Business.ScanSSH;
 import Pojos.*;
 import Service.GetInfoService;
@@ -45,7 +45,7 @@ public class TestController {
     @Autowired
     UploadService uploadService;
     @Autowired
-    CheckSSH checkSSH;
+    CheckSSHLive checkSSHLive;
 
     @RequestMapping(value = "/test", method = RequestMethod.GET)
     public String test(
@@ -117,10 +117,10 @@ public class TestController {
             @RequestParam("thread") int thread) {
         try {
             List<String> slist = readService.readFileTMPFromSFtpServer(name);
-            checkSSH.setListsIP(getInfoService.getListInfoToConnectSSH(slist));
-            checkSSH.setNumberOfThreads(thread);
-            checkSSH.setTimeOut(40);
-            checkSSH.StartSetting();
+            checkSSHLive.setListsIP(getInfoService.getListInfoToConnectSSH(slist));
+            checkSSHLive.setNumberOfThreads(thread);
+            checkSSHLive.setTimeOut(40);
+            checkSSHLive.StartSetting();
             int a = 0;
         } catch (Exception e) {
             e.getMessage();

@@ -10,22 +10,25 @@ import Service.IPService;
 import Service.UploadService;
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelDirectTCPIP;
+import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.sound.midi.MidiDevice;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CheckSSH {
+public class CheckSSHVPS {
 
     private static final int MaxThread = 20000;
 
@@ -50,6 +53,8 @@ public class CheckSSH {
     private boolean flag = true;
     private String HostCheckFresh = "checkip.dyndns.org";
     private int PortCheckFresh = 80;
+    String excute1 = "wget";
+    String excute2 = "apt-get";
     @Autowired
     IPService iPService;
     @Autowired
@@ -145,8 +150,9 @@ public class CheckSSH {
             @Override
             public void run() {
                 try {
-                    Check_USER_PASS_START(id_thread);
                     CurrentThreadActive++;
+                    Check_USER_PASS_START(id_thread);
+
                 } catch (Exception e) {
                     e.getMessage();
                 }
@@ -188,7 +194,7 @@ public class CheckSSH {
 
                 }
 
-                byte check = CHECK_LIVE(info.getHost(), info.getUsername(), info.getPassword(), id_thread);
+                byte check = CHECK_LIVE(info, id_thread);
                 TotalIpsChecked++;
                 System.out.println("ip :" + info.getHost() + " user :" + info.getUsername() + " pass : " + info.getPassword());
                 if (check == 1) {
@@ -197,6 +203,7 @@ public class CheckSSH {
                     info1.setHost(info.getHost());
                     info1.setUsername(info.getUsername());
                     info1.setPassword(info.getPassword());
+                    info1.setDescription(info.getDescription());
 
                     ListsResultIps.add(info1);
 
@@ -209,10 +216,10 @@ public class CheckSSH {
 
     }
 
-    public byte CHECK_LIVE(String STR_IP, String User, String Pass, int id) throws JSchException {
+    public byte CHECK_LIVE(InfoToConnectSSH info, int id) throws JSchException {
 
         Session session = null;
-        session = sshClient.getSession(User, STR_IP);
+        session = sshClient.getSession(info.getUsername(), info.getHost());
         session.setTimeout(TimeOut * 1000);
         session.setConfig("StrictHostKeyChecking", "no");
         session.setConfig("GSSAPIAuthentication", "no");
@@ -223,7 +230,7 @@ public class CheckSSH {
 
         try {
 
-            if (apply_user_pass(session, Pass, id) == 1) {
+            if (apply_user_pass(session, info, id) == 1) {
 
                 return 1;
             }
@@ -234,7 +241,7 @@ public class CheckSSH {
         return 0;
     }
 
-    public byte apply_user_pass(Session s, String pass, int id) throws IOException {
+    public byte apply_user_pass(Session s, InfoToConnectSSH info, int id) throws IOException {
 
         try {
             Bit_CheckIps[id] = false;
@@ -242,7 +249,7 @@ public class CheckSSH {
                 @Override
                 public void run() {
                     try {
-                        Check_ssh(s, id, pass);
+                        Check_ssh(s, id, info);
 
                     } catch (JSchException ex) {
                         Logger.getLogger(ScanSSH.class
@@ -280,26 +287,65 @@ public class CheckSSH {
 
     }
 
-    public void Check_ssh(Session session, int id, String pass) throws JSchException {
+    public void Check_ssh(Session session, int id, InfoToConnectSSH info) throws JSchException {
 
         try {
             //check connect ip
-            session.setPassword(pass);
+            session.setPassword(info.getPassword());
             session.connect();
 
             //check fresh ip
-            Channel channel = session.openChannel("direct-tcpip");
-            ((ChannelDirectTCPIP) channel).setHost(HostCheckFresh);
-            ((ChannelDirectTCPIP) channel).setPort(PortCheckFresh);
+            //Channel channel = session.openChannel("direct-tcpip");
+            Channel channel = session.openChannel("exec");
+            ((ChannelExec) channel).setCommand(excute1 + " || " + excute2);
+            channel.setInputStream(null);
 
             channel.connect(10000);
 
+            //
+            info.setDescription(runCommand(channel));
+
+            channel.disconnect();
             Bit_CheckIps[id] = true;
             NumberOfIpsLive++;
         } catch (Exception ex) {
             ex.getMessage();
 
         }
+
+    }
+
+    public String runCommand(Channel channel) throws IOException {
+        byte[] tmp = new byte[1024];
+        String result = "";
+        InputStream error = ((ChannelExec) channel).getErrStream();
+        InputStream in = channel.getInputStream();
+        while (true) {
+
+            while (error.available() > 0) {
+                int i = error.read(tmp, 0, 1024);
+                if (i < 0) {
+                    break;
+                }
+                result = result + new String(tmp, 0, i);
+            }
+
+            while (in.available() > 0) {
+                int i = in.read(tmp, 0, 1024);
+                if (i < 0) {
+                    break;
+                }
+                result = result + new String(tmp, 0, i);
+            }
+            if (channel.isClosed()) {
+                if (in.available() > 0) {
+                    continue;
+                }
+                break;
+            }
+
+        }
+        return result;
 
     }
 

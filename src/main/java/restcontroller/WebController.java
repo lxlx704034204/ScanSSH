@@ -44,8 +44,6 @@ public class WebController {
     @Autowired
     ScanSSH scanSSH;
     @Autowired
-    ScanPort22 scanPort22;
-    @Autowired
     DowloadService dowloadService;
     @Autowired
     DeleteService deleteService;
@@ -118,54 +116,7 @@ public class WebController {
         return "ListInfo";
     }
 
-    @RequestMapping(value = {"/CheckSsh"}, method = RequestMethod.GET)
-    public String UpdateCheckSsh1(ModelMap mm) {
-
-        try {
-            List<String> lists = getInfoService.getListFileOnSFtpServer();
-            mm.addAttribute("listsFile", lists);
-
-        } catch (Exception e) {
-        }
-        return "ScanSSH";
-    }
-
-    @RequestMapping(value = {"/ResultSSH"}, method = RequestMethod.GET)
-    public String ResultSSH(ModelMap mm) {
-        float tongssh = scanSSH.getTotalIps();
-        float sshdacheck = scanSSH.getTotalIpsChecked();
-        float sshlive = scanSSH.getNumberOfIpsLive();
-
-        if (scanSSH.getListsResultIps() != null && scanSSH.getListsResultIps().size() > 0) {
-            mm.addAttribute("listsInfo", scanSSH.getListsResultIps());
-        }
-
-        mm.addAttribute("tongssh", tongssh);
-        mm.addAttribute("sshdacheck", sshdacheck);
-        mm.addAttribute("threadactive", scanSSH.getCurrentThreadActive());
-        mm.addAttribute("sshlive", sshlive);
-
-        return "ResultSSH";
-    }
-
-    @RequestMapping(value = {"/ResultScanPort"}, method = RequestMethod.GET)
-    public String ResultScanPort(ModelMap mm) {
-        float tongip = scanPort22.getTotalIps();
-        float ipdacheck = scanPort22.getTotalIpsChecked();
-        float iplive = scanPort22.getNumberOfIpsLive();
-
-        if (scanPort22.getListsIP() != null && scanPort22.getListsIP().size() > 0) {
-            mm.addAttribute("listsInfo", scanPort22.getListsIP());
-        }
-
-        mm.addAttribute("tongip", tongip);
-        mm.addAttribute("ipdacheck", ipdacheck);
-        mm.addAttribute("threadactive", scanPort22.getCurrentThreadActive());
-        mm.addAttribute("iplive", iplive);
-
-        return "ResultScanPort";
-    }
-
+  
     @RequestMapping(value = "/SaveSsh", method = RequestMethod.GET)
     public String SaveSsh(RedirectAttributes redirectAttrs) {
         String message = "";

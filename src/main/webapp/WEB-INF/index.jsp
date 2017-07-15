@@ -31,11 +31,41 @@
             <label>get List File</label>
             <a href="${getListFile}">get List File</a>
         </div>
+        <br/><br/><br/>
         <div class="col-xs-12">
+
             <s:url value="CheckSsh" var="CheckSsh"/>
-            <label>CheckSsh</label>
-            <a href="${CheckSsh}">CheckSsh</a>
+            <label>ScanSSH BY Range</label>
+            <a href="${CheckSsh}">ScanSSH BY Range</a>
         </div>
+        <div class="col-xs-12">
+            <s:url value="ResultSSH" var="ResultSSH"/>
+            <label>Result ScanSSH BY Range</label>
+            <a href="${ResultSSH}">Result ScanSSH BY Range</a>
+        </div>
+        <br/><br/><br/>
+        <div class="col-xs-12">
+            <s:url value="checkSshVps" var="checkSshVps"/>
+            <label>Check SSH VPS</label>
+            <a href="${checkSshVps}">Check SSH VPS</a>
+        </div>
+        <div class="col-xs-12">
+            <s:url value="ResultScanSHHVPS" var="ResultScanSHHVPS"/>
+            <label>ResultScanSHHVPS</label>
+            <a href="${ResultScanSHHVPS}">ResultScanSHHVPS</a>
+        </div>
+        <br/><br/><br/>
+        <div class="col-xs-12">
+            <s:url value="checkSshLive" var="checkSshLive"/>
+            <label>Check SSH VPS</label>
+            <a href="${checkSshLive}">checkSshLive</a>
+        </div>
+        <div class="col-xs-12">
+            <s:url value="ResultCheckSshLive" var="ResultCheckSshLive"/>
+            <label>ResultCheckSshLive</label>
+            <a href="${ResultCheckSshLive}">ResultCheckSshLive</a>
+        </div>
+        <br/><br/><br/>
         <div class="col-xs-12">
             <s:url value="scanPort" var="scanPort"/>
             <label>ScanPort22</label>
@@ -46,10 +76,6 @@
             <label>ResultScanPort</label>
             <a href="${ResultScanPort}">ResultScanPort</a>
         </div>
-        <div class="col-xs-12">
-            <s:url value="ResultSSH" var="ResultSSH"/>
-            <label>ResultSSH</label>
-            <a href="${ResultSSH}">ResultSSH</a>
-        </div>
+
     </body>
 </html>

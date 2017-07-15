@@ -7,7 +7,6 @@ package restcontroller;
 
 import Business.ScanSSH;
 
-
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,17 +39,13 @@ public class ServiceController {
     ReadService readService;
     @Autowired
     ScanSSH scanSSH;
-    private static float tongssh = 0;
-    private static float sshdacheck = 0;
-    private static float sshlive = 0;
-
 
     @RequestMapping(value = {"/UpdateCheckSsh"}, method = RequestMethod.GET)
     public String UpdateCheckSsh2(ModelMap mm) {
 
-        tongssh = scanSSH.getTotalIps();
-        sshdacheck = scanSSH.getTotalIpsChecked();
-        sshlive = scanSSH.getNumberOfIpsLive();
+        float tongssh = scanSSH.getTotalIps();
+        float sshdacheck = scanSSH.getTotalIpsChecked();
+        float sshlive = scanSSH.getNumberOfIpsLive();
 
         try {
 
@@ -58,6 +53,17 @@ public class ServiceController {
             e.getMessage();
 
         }
+        return "tong ssh : " + tongssh + " tong da check : " + sshdacheck + " tong live : " + sshlive + " so thread da tao : " + scanSSH.getCurrentThreadActive()
+                + " / tong so thread : " + scanSSH.getNumberOfThreads();
+    }
+
+    @RequestMapping(value = {"/UpdateCheckSshVps"}, method = RequestMethod.GET)
+    public String UpdateCheckSshVps(ModelMap mm) {
+
+        float tongssh = scanSSH.getTotalIps();
+        float sshdacheck = scanSSH.getTotalIpsChecked();
+        float sshlive = scanSSH.getNumberOfIpsLive();
+
         return "tong ssh : " + tongssh + " tong da check : " + sshdacheck + " tong live : " + sshlive + " so thread da tao : " + scanSSH.getCurrentThreadActive()
                 + " / tong so thread : " + scanSSH.getNumberOfThreads();
     }

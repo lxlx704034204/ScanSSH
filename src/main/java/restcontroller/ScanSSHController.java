@@ -29,6 +29,8 @@ public class ScanSSHController {
     ReadService readService;
     @Autowired
     GetInfoService getInfoService;
+    @Autowired
+    CheckSSHVPSController checkSSHVPS;
 
     @RequestMapping(value = {"/CheckSsh"}, method = RequestMethod.POST)
     public String ScanSsh(
@@ -39,65 +41,56 @@ public class ScanSSHController {
             HttpServletRequest request, HttpSession session, ModelMap mm
     ) {
         session.setAttribute("url", url + "/UpdateCheckSsh");
+        if (!scanSSH.isFlagActive()) {
+            Thread scanssh = new Thread() {
+                @Override
+                public void run() {
+                    try {
+                        scanSSH.setListsRange(readService.readFileTMPFromSFtpServer(range));
+                        scanSSH.setListsUserPass(getInfoService.getListUserPass(readService.readFileTMPFromSFtpServer(userpass)));
+                        scanSSH.setNumberOfThreads(thread);
+                        scanSSH.StartSetting();
+                        Thread.sleep(1000);
+                    } catch (Exception e) {
+                        e.getMessage();
+                    }
 
-        Thread scanssh = new Thread() {
-            @Override
-            public void run() {
-                try {
-                    scanSSH.setListsRange(readService.readFileTMPFromSFtpServer(range));
-                    scanSSH.setListsUserPass(getInfoService.getListUserPass(readService.readFileTMPFromSFtpServer(userpass)));
-                    scanSSH.setNumberOfThreads(thread);
-                    scanSSH.StartSetting();
-                    Thread.sleep(1000);
-                } catch (Exception e) {
-                    e.getMessage();
                 }
-
-            }
-        };
-        scanssh.start();
+            };
+            scanssh.start();
+        }
 
         return "ResultSSH";
     }
 
-    @RequestMapping(value = {"/scanPort"}, method = RequestMethod.GET)
-    public String scanPort(
-            ModelMap mm
-    ) {
+    @RequestMapping(value = {"/CheckSsh"}, method = RequestMethod.GET)
+    public String UpdateCheckSsh1(ModelMap mm) {
+
         try {
             List<String> lists = getInfoService.getListFileOnSFtpServer();
             mm.addAttribute("listsFile", lists);
+
         } catch (Exception e) {
-            e.getMessage();
         }
-        return "ScanPort";
+        return "ScanSSH";
     }
 
-    @RequestMapping(value = {"/scanPort"}, method = RequestMethod.POST)
-    public String scanPort(
-            @RequestParam("url") String url,
-            @RequestParam("range") String range,
-            @RequestParam("thread") int thread,
-            HttpServletRequest request, HttpSession session, ModelMap mm
-    ) {
+    @RequestMapping(value = {"/ResultSSH"}, method = RequestMethod.GET)
+    public String ResultSSH(ModelMap mm) {
+        float tongssh = scanSSH.getTotalIps();
+        float sshdacheck = scanSSH.getTotalIpsChecked();
+        float sshlive = scanSSH.getNumberOfIpsLive();
 
-        Thread checkssh = new Thread() {
-            @Override
-            public void run() {
-                try {
-                    scanPort22.setListsRange(readService.readFileTMPFromSFtpServer(range));
-                    scanPort22.setNumberOfThreads(thread);
-                    scanPort22.StartSetting();
-                    int x = 9;
-                } catch (Exception e) {
-                    e.getMessage();
-                }
+        if (scanSSH.getListsResultIps() != null && scanSSH.getListsResultIps().size() > 0) {
+            mm.addAttribute("listsInfo", scanSSH.getListsResultIps());
+        }
 
-            }
-        };
-        checkssh.start();
+        mm.addAttribute("tongssh", tongssh);
+        mm.addAttribute("sshdacheck", sshdacheck);
+        mm.addAttribute("threadactive", scanSSH.getCurrentThreadActive());
+        mm.addAttribute("sshlive", sshlive);
 
-        //session.setAttribute("url", url + "/UpdateCheckSsh");
-        return "ResultScanPort";
+        return "ResultSSH";
     }
+
 }
