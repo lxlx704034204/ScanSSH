@@ -8,17 +8,19 @@ package Service;
 import Pojos.InfoToConnectSSH;
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelSftp;
-import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.JSchException;
+
 import com.jcraft.jsch.Session;
+import com.jcraft.jsch.SftpException;
 import java.io.BufferedReader;
-import java.io.FileInputStream;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
+
 import org.apache.commons.net.ftp.FTPClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -92,7 +94,7 @@ public class ReadService {
 
             return lists;
 
-        } catch (Exception e) {
+        } catch (JSchException | SftpException | IOException e) {
             e.getMessage();
         }
         return null;

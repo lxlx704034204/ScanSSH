@@ -70,11 +70,7 @@
             <a href="${SaveSsh}">Save ssh on ftp server</a>
 
         </div>
-        <div class="col-xs-12">
-            <label>Dowload ssh</label>
-            <s:url value="dowloadSsh" var="dowloadSsh"/>
-            <a href="${dowloadSsh}">dowload ssh </a>
-        </div>
+      
 
 
         <div class="col-xs-12">

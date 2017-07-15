@@ -9,16 +9,16 @@ import Business.ScanSSH;
 import Pojos.InfoToConnectSSH;
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelSftp;
+import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
-import java.io.BufferedOutputStream;
+import com.jcraft.jsch.SftpException;
+
 import java.io.BufferedWriter;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectOutputStream;
+
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.List;
@@ -62,7 +62,7 @@ public class DowloadService {
             }
             bufferedWriter.close();
             return "D:\\KetQuaSSH" + temp + ".txt";
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.getMessage();
             bufferedWriter.close();
         }
@@ -91,7 +91,7 @@ public class DowloadService {
             }
             bufferedWriter.close();
             return "D:\\" + filename;
-        } catch (Exception e) {
+        } catch (IOException | ClassNotFoundException e) {
 
             System.out.println(e.getMessage());
             bufferedWriter.close();
@@ -153,7 +153,7 @@ public class DowloadService {
             inputStream.close();
             outStream.close();
 
-        } catch (Exception e) {
+        } catch (JSchException | SftpException | IOException e) {
             e.getMessage();
         }
         return null;

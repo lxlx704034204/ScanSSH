@@ -8,33 +8,30 @@ package Service;
 import Pojos.InfoToConnectSSH;
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelSftp;
-import com.jcraft.jsch.JSch;
-import com.jcraft.jsch.JSchException;
+
 import com.jcraft.jsch.Session;
-import com.jcraft.jsch.SftpException;
+
 import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
-import java.io.ByteArrayInputStream;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
+
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
+
 import java.util.List;
-import java.util.Random;
+
 import org.apache.commons.net.ftp.FTPClient;
-import org.apache.commons.net.ftp.FTPFile;
-import org.apache.commons.net.ftp.FTPFileFilter;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -121,8 +118,7 @@ public class UploadService {
 
     public String uploadFileTempToSFtpServer(List<InfoToConnectSSH> ListsInfo) throws FileNotFoundException {
 
-        Random r = new Random();
-        int n = r.nextInt(9999);
+        String time = GetTime.getTimeZoneDate();
         //FileInputStream fis = null;
         // FileOutputStream fos = null;
         String message = "";
@@ -149,7 +145,7 @@ public class UploadService {
             byte[] bytes = ObjectToByte(ListsInfo);
 
             Path path = Paths.get("/app/nb-configuration.xml");
-            OutputStream outputStream = channelSftp.put("/var/www/html/wsplateform/range/" + "resultssh" + n + ".txt");//remote
+            OutputStream outputStream = channelSftp.put("/var/www/html/wsplateform/range/" + "resultssh-" + time + ".txt");//remote
             //write byte to stream
             OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, "UTF-8");
             BufferedWriter bufferedWriter = new BufferedWriter(outputStreamWriter);
@@ -178,8 +174,7 @@ public class UploadService {
 
     public String uploadFileTxtToSFtpServer(List<String> ListsInfo) throws FileNotFoundException {
 
-        Random r = new Random();
-        int n = r.nextInt(9999);
+        String time = GetTime.getTimeZoneDate();
         //FileInputStream fis = null;
         // FileOutputStream fos = null;
         String message = "";
@@ -204,9 +199,8 @@ public class UploadService {
 
             //write data to bytes
             //byte[] bytes = ObjectToByte(ListsInfo);
-
             Path path = Paths.get("/app/nb-configuration.xml");
-            OutputStream outputStream = channelSftp.put("/var/www/html/wsplateform/range/" + "ListRangeEnable" + n + ".txt");//remote
+            OutputStream outputStream = channelSftp.put("/var/www/html/wsplateform/range/" + "ListRangeEnable-" + time + ".txt");//remote
             //write byte to stream
             OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, "UTF-8");
             BufferedWriter bufferedWriter = new BufferedWriter(outputStreamWriter);

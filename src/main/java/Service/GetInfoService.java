@@ -8,7 +8,9 @@ package Service;
 import Pojos.InfoToConnectSSH;
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelSftp;
+import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
+import com.jcraft.jsch.SftpException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -87,15 +89,15 @@ public class GetInfoService {
             FTPFile[] listsFile = getFileFtpServer(client);
             client.disconnect();
             if (listsFile != null) {
-                for (int i = 0; i < listsFile.length; i++) {
-                    lists.add(listsFile[i].getName());
+                for (FTPFile listsFile1 : listsFile) {
+                    lists.add(listsFile1.getName());
                 }
                 return lists;
             } else {
                 return null;
             }
 
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.getMessage();
             client.disconnect();
         }
@@ -125,7 +127,7 @@ public class GetInfoService {
             channel.disconnect();
             
             return lists;
-        } catch (Exception e) {
+        } catch (JSchException | SftpException e) {
             e.getMessage();
             
         }
@@ -136,7 +138,7 @@ public class GetInfoService {
         try {
             FTPFile[] result = ftpClient.listFiles();
             return result;
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.getMessage();
         }
         return null;

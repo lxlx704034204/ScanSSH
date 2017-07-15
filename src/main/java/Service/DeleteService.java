@@ -7,10 +7,10 @@ package Service;
 
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelSftp;
+import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Vector;
+import com.jcraft.jsch.SftpException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -40,7 +40,7 @@ public class DeleteService {
             channel.disconnect();
 
             return "oke";
-        } catch (Exception e) {
+        } catch (JSchException | SftpException e) {
             e.getMessage();
 
         }
