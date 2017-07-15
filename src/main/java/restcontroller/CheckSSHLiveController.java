@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-public class CheckSSHLive {
+public class CheckSSHLiveController {
 
     @Autowired
     Business.CheckSSHLive checkSSHLive;
