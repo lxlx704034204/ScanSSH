@@ -5,7 +5,7 @@
  */
 package restcontroller;
 
-import Business.ScanSSH;
+import Business.*;
 
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,6 +39,12 @@ public class ServiceController {
     ReadService readService;
     @Autowired
     ScanSSH scanSSH;
+    @Autowired
+    CheckSSHLive checkSSHLive;
+    @Autowired
+    CheckSSHVPS checkSSHVPS;
+    @Autowired
+    ScanPort22 scanPort22;
 
     @RequestMapping(value = {"/UpdateCheckSsh"}, method = RequestMethod.GET)
     public String UpdateCheckSsh2(ModelMap mm) {
@@ -60,12 +66,34 @@ public class ServiceController {
     @RequestMapping(value = {"/UpdateCheckSshVps"}, method = RequestMethod.GET)
     public String UpdateCheckSshVps(ModelMap mm) {
 
-        float tongssh = scanSSH.getTotalIps();
-        float sshdacheck = scanSSH.getTotalIpsChecked();
-        float sshlive = scanSSH.getNumberOfIpsLive();
+        float tongssh = checkSSHVPS.getTotalIps();
+        float sshdacheck = checkSSHVPS.getTotalIpsChecked();
+        float sshlive = checkSSHVPS.getNumberOfIpsLive();
 
-        return "tong ssh : " + tongssh + " tong da check : " + sshdacheck + " tong live : " + sshlive + " so thread da tao : " + scanSSH.getCurrentThreadActive()
-                + " / tong so thread : " + scanSSH.getNumberOfThreads();
+        return "tong ssh : " + tongssh + " tong da check : " + sshdacheck + " tong live : " + sshlive + " so thread da tao : " + checkSSHVPS.getCurrentThreadActive()
+                + " / tong so thread : " + checkSSHVPS.getNumberOfThreads();
+    }
+    
+    @RequestMapping(value = {"/UpdateScanPort"}, method = RequestMethod.GET)
+    public String UpdateScanPort(ModelMap mm) {
+
+        float tongssh = scanPort22.getTotalIps();
+        float sshdacheck = scanPort22.getTotalIpsChecked();
+        float sshlive = scanPort22.getNumberOfIpsLive();
+
+        return "tong ssh : " + tongssh + " tong da check : " + sshdacheck + " tong live : " + sshlive + " so thread da tao : " + scanPort22.getCurrentThreadActive()
+                + " / tong so thread : " + scanPort22.getNumberOfThreads();
+    }
+    
+    @RequestMapping(value = {"/UpdateCheckLive"}, method = RequestMethod.GET)
+    public String UpdateCheckLive(ModelMap mm) {
+
+        float tongssh = checkSSHLive.getTotalIps();
+        float sshdacheck = checkSSHLive.getTotalIpsChecked();
+        float sshlive = checkSSHLive.getNumberOfIpsLive();
+
+        return "tong ssh : " + tongssh + " tong da check : " + sshdacheck + " tong live : " + sshlive + " so thread da tao : " + checkSSHLive.getCurrentThreadActive()
+                + " / tong so thread : " + checkSSHLive.getNumberOfThreads();
     }
 
 }

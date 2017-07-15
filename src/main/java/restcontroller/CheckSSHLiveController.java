@@ -35,7 +35,7 @@ public class CheckSSHLiveController {
             @RequestParam("thread") int thread,
             HttpServletRequest request, HttpSession session, ModelMap mm
     ) {
-        //session.setAttribute("url", url + "/UpdateCheckSshVps");
+        session.setAttribute("url", url + "/UpdateCheckLive");
         Thread checkssh = new Thread() {
             @Override
             public void run() {
@@ -75,8 +75,8 @@ public class CheckSSHLiveController {
         float ipdacheck = checkSSHLive.getTotalIpsChecked();
         float iplive = checkSSHLive.getNumberOfIpsLive();
 
-        if (checkSSHLive.getListsIP() != null && checkSSHLive.getListsIP().size() > 0) {
-            mm.addAttribute("listsInfo", checkSSHLive.getListsIP());
+        if (checkSSHLive.getListsResultIps() != null && checkSSHLive.getListsResultIps().size() > 0) {
+            mm.addAttribute("listsInfo", checkSSHLive.getListsResultIps());
         }
 
         mm.addAttribute("tongip", tongip);

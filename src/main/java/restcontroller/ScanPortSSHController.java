@@ -35,7 +35,7 @@ public class ScanPortSSHController {
             @RequestParam("thread") int thread,
             HttpServletRequest request, HttpSession session, ModelMap mm
     ) {
-
+        session.setAttribute("url", url + "/UpdateScanPort");
         Thread checkssh = new Thread() {
             @Override
             public void run() {

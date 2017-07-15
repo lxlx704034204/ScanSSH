@@ -75,8 +75,8 @@ public class CheckSSHVPSController {
         float ipdacheck = checkSSHVPS.getTotalIpsChecked();
         float iplive = checkSSHVPS.getNumberOfIpsLive();
 
-        if (checkSSHVPS.getListsIP() != null && checkSSHVPS.getListsIP().size() > 0) {
-            mm.addAttribute("listsInfo", checkSSHVPS.getListsIP());
+        if (checkSSHVPS.getListsResultIps() != null && checkSSHVPS.getListsResultIps().size() > 0) {
+            mm.addAttribute("listsInfo", checkSSHVPS.getListsResultIps());
         }
 
         mm.addAttribute("tongip", tongip);
