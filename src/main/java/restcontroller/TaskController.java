@@ -30,7 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
-public class WebController {
+public class TaskController {
 
     @Autowired
     ServletContext servletContext;
