@@ -57,7 +57,7 @@
         <br/><br/><br/>
         <div class="col-xs-12">
             <s:url value="checkSshLive" var="checkSshLive"/>
-            <label>Check SSH VPS</label>
+            <label>checkSshLive</label>
             <a href="${checkSshLive}">checkSshLive</a>
         </div>
         <div class="col-xs-12">
