@@ -23,7 +23,7 @@
     <body>
         <h1>Scan Result</h1>
         <h1>Check ssh</h1>
-        <s:url value="CheckSsh" var="CheckSsh"/>
+        <s:url value="scanPort" var="scanPort"/>
 
         <form:form method="POST" action="${scanPort}">
             <div class="col-xs-12">

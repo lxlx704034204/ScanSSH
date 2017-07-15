@@ -22,9 +22,9 @@
     </head>
     <body>
         <h1>Check ssh</h1>
-        <s:url value="checkSshVps" var="checkSshVps"/>
+        <s:url value="checkSshLive" var="checkSshLive"/>
 
-        <form:form method="POST" action="${checkSshVps}">
+        <form:form method="POST" action="${checkSshLive}">
             <div class="col-xs-12">
                 <div class="box box-warning">
                     <div class="box-body">
