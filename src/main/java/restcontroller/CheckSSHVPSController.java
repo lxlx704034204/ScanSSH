@@ -69,7 +69,7 @@ public class CheckSSHVPSController {
         return "ScanSSHVPS";
     }
 
-    @RequestMapping(value = {"/ResultScanPort"}, method = RequestMethod.GET)
+    @RequestMapping(value = {"/ResultScanSHHVPS"}, method = RequestMethod.GET)
     public String ResultScanPort(ModelMap mm) {
         float tongip = checkSSHVPS.getTotalIps();
         float ipdacheck = checkSSHVPS.getTotalIpsChecked();
