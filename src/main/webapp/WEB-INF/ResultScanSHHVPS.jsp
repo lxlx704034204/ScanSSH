@@ -16,9 +16,9 @@
     </head>
     <body>
         <h1>Result ssh!</h1>
-        <c:if test="${not empty tongip}">tongIp : ${tongip}</c:if>
-        <c:if test="${not empty ipdacheck}">ipdacheck : ${ipdacheck}</c:if>
-        <c:if test="${not empty iplive}">iplive : ${iplive}</c:if>
+        <c:if test="${not empty tongssh}">tongssh : ${tongssh}</c:if>
+        <c:if test="${not empty sshdacheck}">sshdacheck : ${sshdacheck}</c:if>
+        <c:if test="${not empty sshlive}">sshlive : ${sshlive}</c:if>
         <c:if test="${not empty threadactive}">tong thread dang active : ${threadactive}</c:if>
         <c:if test="${not empty message}">message : ${message}</c:if>
         <c:if test="${not empty listsInfo}">
@@ -27,6 +27,9 @@
                     <tr>
                         <th>stt</th>
                         <th>host</th>
+                        <th>user</th>
+                        <th>pass</th>
+                        <th>country</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -40,9 +43,17 @@
                             </td>
 
                             <td>
-                                ${lists}
+                                ${lists.host}
                             </td>
-
+                            <td>
+                                ${lists.username}
+                            </td>
+                            <td>
+                                ${lists.password}
+                            </td>
+                            <td>
+                                ${lists.country}
+                            </td>
 
 
 
@@ -52,6 +63,20 @@
 
             </table>
         </c:if>
+
+        <div class="col-xs-12">
+            <label>Save ssh</label>
+            <s:url value="SaveSsh" var="SaveSsh"/>
+            <a href="${SaveSsh}">Save ssh on ftp server</a>
+
+        </div>
+        <div class="col-xs-12">
+            <label>Dowload ssh</label>
+            <s:url value="dowloadSsh" var="dowloadSsh"/>
+            <a href="${dowloadSsh}">dowload ssh </a>
+        </div>
+
+
         <div class="col-xs-12">
             <label>Status</label>
             <div id="StatusCheck">
