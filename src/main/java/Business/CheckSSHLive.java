@@ -40,7 +40,7 @@ public class CheckSSHLive {
 
     private Thread[] thread;
     private Thread ThreadCheckStop;
-    private List<InfoToConnectSSH> ListsResultIps = new ArrayList<>();
+    private List<InfoToConnectSSH> ListsResultIps = null;
     private List<InfoToConnectSSH> ListsIP; //truyen vao tu controller
     private boolean[] Bit_CheckIps;
     private int TimeOut = 30;

@@ -9,7 +9,7 @@ import Pojos.*;
 import Service.IPService;
 import Service.UploadService;
 import com.jcraft.jsch.Channel;
-import com.jcraft.jsch.ChannelDirectTCPIP;
+
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
@@ -17,8 +17,7 @@ import com.jcraft.jsch.Session;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintStream;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;

@@ -54,7 +54,7 @@ public class ScanSSHController {
                         scanSSH.setListsUserPass(getInfoService.getListUserPass(readService.readFileTMPFromSFtpServer(userpass)));
                         scanSSH.setNumberOfThreads(thread);
                         scanSSH.StartSetting();
-                        Thread.sleep(1000);
+                        
                     } catch (Exception e) {
                         e.getMessage();
                     }

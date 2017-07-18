@@ -26,7 +26,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class ScanSSH {
 
-    private static final int MaxThread = 20000;
+    private static final int MaxThread = 2000000;
 
     //thong tin ve ssh se duoc cung cap cho controller
     private long TotalIps = 0;
