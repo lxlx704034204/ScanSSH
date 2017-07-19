@@ -190,6 +190,8 @@ public class ScanSSH {
                 if (IndexOfListRange >= TotalRange && CurrentThreadActive == 0) {
                     break;
                 } else {
+                    System.out.println("CurrentThreadActive:" + CurrentThreadActive + " TotalIpsChecked : "
+                            + TotalIpsChecked + " NumberOfIpsLive: " + NumberOfIpsLive);
                     CurrentThreadActive2 = CurrentThreadActive;
                     NumberOfIpsLive2 = NumberOfIpsLive;
                     TotalIps2 = TotalIps;
@@ -239,7 +241,7 @@ public class ScanSSH {
                 if (L_IpBeginTemp <= L_IpEndTemp) {
                     for (int i = 0; i < ListsUserPass.size(); i++) {
                         byte check = CHECK_LIVE(S_IpBeginTemp, ListsUserPass.get(i).getUsername(), ListsUserPass.get(i).getPassword(), id_thread);
-                        System.out.println("ip :" + S_IpBeginTemp + " user :" + ListsUserPass.get(i).getUsername() + " pass : " + ListsUserPass.get(i).getPassword());
+                        //System.out.println("ip :" + S_IpBeginTemp + " user :" + ListsUserPass.get(i).getUsername() + " pass : " + ListsUserPass.get(i).getPassword());
                         if (check == 1) {
 
                             InfoToConnectSSH info = new InfoToConnectSSH();
