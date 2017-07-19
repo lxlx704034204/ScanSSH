@@ -13,8 +13,10 @@ import com.jcraft.jsch.ChannelDirectTCPIP;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
+import com.sun.management.OperatingSystemMXBean;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -191,12 +193,15 @@ public class ScanSSH {
         try {
             while (true) {
                 Thread.sleep(3000);
-
+                OperatingSystemMXBean osBean = ManagementFactory.getPlatformMXBean(
+                        OperatingSystemMXBean.class);
                 if (IndexOfListRange >= TotalRange && CurrentThreadActive == 0) {
                     break;
                 } else {
                     System.out.println("CurrentThreadActive:" + CurrentThreadActive + " TotalIpsChecked : "
                             + TotalIpsChecked + " NumberOfIpsLive: " + NumberOfIpsLive);
+                    System.out.println("process : "+osBean.getProcessCpuLoad());
+                    System.out.println("cpu : "+osBean.getSystemCpuLoad());
                 }
             }
 
