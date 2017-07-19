@@ -54,7 +54,7 @@ public class ScanSSHController {
                         scanSSH.setListsUserPass(getInfoService.getListUserPass(readService.readFileTMPFromSFtpServer(userpass)));
                         scanSSH.setNumberOfThreads(thread);
                         scanSSH.StartSetting();
-                        
+
                     } catch (Exception e) {
                         e.getMessage();
                     }
@@ -81,9 +81,9 @@ public class ScanSSHController {
 
     @RequestMapping(value = {"/ResultSSH"}, method = RequestMethod.GET)
     public String ResultSSH(ModelMap mm) {
-        float tongssh = scanSSH.getTotalIps();
-        float sshdacheck = scanSSH.getTotalIpsChecked();
-        float sshlive = scanSSH.getNumberOfIpsLive();
+        float tongssh = scanSSH.getTotalIps2();
+        float sshdacheck = scanSSH.getTotalIpsChecked2();
+        float sshlive = scanSSH.getNumberOfIpsLive2();
 
         if (scanSSH.getListsResultIps() != null && scanSSH.getListsResultIps().size() > 0) {
             mm.addAttribute("listsInfo", scanSSH.getListsResultIps());
@@ -91,7 +91,7 @@ public class ScanSSHController {
 
         mm.addAttribute("tongssh", tongssh);
         mm.addAttribute("sshdacheck", sshdacheck);
-        mm.addAttribute("threadactive", scanSSH.getCurrentThreadActive());
+        mm.addAttribute("threadactive", scanSSH.getCurrentThreadActive2());
         mm.addAttribute("sshlive", sshlive);
 
         return "ResultSSH";

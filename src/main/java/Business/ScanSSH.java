@@ -57,6 +57,12 @@ public class ScanSSH {
     private boolean FlagActive = false;
     private String HostCheckFresh = "checkip.dyndns.org";
     private int PortCheckFresh = 80;
+    //
+    private int CurrentThreadActive2 = 0;
+    private int NumberOfIpsLive2 = 0;
+    private long TotalIps2 = 0;
+    private long TotalIpsChecked2 = 0;
+    private int NumberOfThreads2 = 0;
     @Autowired
     IPService iPService;
     @Autowired
@@ -179,10 +185,16 @@ public class ScanSSH {
     public void manager() {
         try {
             while (true) {
-                Thread.sleep(2000);
-                // System.out.println(" CurrentThreadActive: " + CurrentThreadActive);
-                if (CurrentThreadActive == 0) {
+                Thread.sleep(1000);
+
+                if (IndexOfListRange > TotalRange && CurrentThreadActive == 0) {
                     break;
+                } else {
+                    CurrentThreadActive2 = CurrentThreadActive;
+                    NumberOfIpsLive2 = NumberOfIpsLive;
+                    TotalIps2 = TotalIps;
+                    TotalIpsChecked2 = TotalIpsChecked;
+                    NumberOfThreads2 = NumberOfThreads;
                 }
             }
 
@@ -341,21 +353,25 @@ public class ScanSSH {
 
     }
 
+    public int getCurrentThreadActive2() {
+        return CurrentThreadActive2;
+    }
+
+    public int getNumberOfIpsLive2() {
+        return NumberOfIpsLive2;
+    }
+
+    public long getTotalIps2() {
+        return TotalIps2;
+    }
+
+    public long getTotalIpsChecked2() {
+        return TotalIpsChecked2;
+    }
+
     //thong tin ve ssh se duoc cung cap cho controller
-    public long getTotalIps() {
-        return TotalIps;
-    }
-
-    public long getTotalIpsChecked() {
-        return TotalIpsChecked;
-    }
-
-    public int getNumberOfThreads() {
-        return NumberOfThreads;
-    }
-
-    public int getNumberOfIpsLive() {
-        return NumberOfIpsLive;
+    public int getNumberOfThreads2() {
+        return NumberOfThreads2;
     }
 
     public void setNumberOfThreads(int NumberOfThreads) {
@@ -376,10 +392,6 @@ public class ScanSSH {
 
     public void setListsResultIps(List<InfoToConnectSSH> ListsResultIps) {
         this.ListsResultIps = ListsResultIps;
-    }
-
-    public int getCurrentThreadActive() {
-        return CurrentThreadActive;
     }
 
     public Thread[] getThread() {
