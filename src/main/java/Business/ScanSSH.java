@@ -38,6 +38,7 @@ public class ScanSSH {
     private int CurrentThreadActive = 0;
     // du lieu de ssh hoat dong
     private static Object syncObj = new Object();
+    private static Object syncObjcpu = new Object();
     private Object ObjThread = new Object();
 
     private Thread[] thread;
@@ -200,8 +201,8 @@ public class ScanSSH {
                 } else {
                     System.out.println("CurrentThreadActive:" + CurrentThreadActive + " TotalIpsChecked : "
                             + TotalIpsChecked + " NumberOfIpsLive: " + NumberOfIpsLive);
-                    System.out.println("process : "+osBean.getProcessCpuLoad());
-                    System.out.println("cpu : "+osBean.getSystemCpuLoad());
+                    System.out.println("process : " + osBean.getProcessCpuLoad());
+                    System.out.println("cpu : " + osBean.getSystemCpuLoad());
                 }
             }
 
@@ -243,7 +244,10 @@ public class ScanSSH {
                     }
 
                 }
+                synchronized (syncObjcpu) {
+                    CurrentThreadActive++;
 
+                }
                 if (L_IpBeginTemp <= L_IpEndTemp) {
                     for (int i = 0; i < ListsUserPass.size(); i++) {
                         byte check = CHECK_LIVE(S_IpBeginTemp, ListsUserPass.get(i).getUsername(), ListsUserPass.get(i).getPassword(), id_thread);
@@ -260,6 +264,10 @@ public class ScanSSH {
                             break;
                         }
                     }
+                }
+
+                synchronized (syncObjcpu) {
+                    CurrentThreadActive--;
                 }
 
             }
