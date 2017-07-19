@@ -187,7 +187,7 @@ public class ScanSSH {
             while (true) {
                 Thread.sleep(1000);
 
-                if (IndexOfListRange > TotalRange && CurrentThreadActive == 0) {
+                if (IndexOfListRange >= TotalRange && CurrentThreadActive == 0) {
                     break;
                 } else {
                     CurrentThreadActive2 = CurrentThreadActive;

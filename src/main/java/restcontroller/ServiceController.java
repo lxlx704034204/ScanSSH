@@ -53,12 +53,6 @@ public class ServiceController {
         float sshdacheck = scanSSH.getTotalIpsChecked2();
         float sshlive = scanSSH.getNumberOfIpsLive2();
 
-        try {
-
-        } catch (Exception e) {
-            e.getMessage();
-
-        }
         return "tong ssh : " + tongssh + " tong da check : " + sshdacheck + " tong live : " + sshlive + " so thread da tao : " + scanSSH.getCurrentThreadActive2()
                 + " / tong so thread : " + scanSSH.getNumberOfThreads2();
     }
