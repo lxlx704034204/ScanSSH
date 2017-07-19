@@ -109,11 +109,21 @@ public class ScanSSH {
         };
         manager.start();
         //run thread
-        for (int i = 0; i < NumberOfThreads; i++) {
-            Run(i);
-            Thread.sleep(100);
-        }
+        Thread makeThread = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    for (int i = 0; i < NumberOfThreads; i++) {
+                        Run(i);
+                        Thread.sleep(100);
+                    }
+                } catch (Exception e) {
+                    e.getMessage();
+                }
 
+            }
+        };
+        makeThread.start();
         //tao thread check viec dung
         ThreadCheckStop = new Thread() {
             @Override
@@ -201,6 +211,7 @@ public class ScanSSH {
         long L_IpBeginTemp = 0;
         try {
             while (true) {
+                Thread.sleep(100);
                 synchronized (syncObj) {
                     //kiem tra con range trong list range khong
                     if (IndexOfListRange < TotalRange) {
@@ -344,9 +355,8 @@ public class ScanSSH {
         }
 
     }
-    
 
-    public long getTotalIps() {   
+    public long getTotalIps() {
         return TotalIps;
     }
 
@@ -363,7 +373,7 @@ public class ScanSSH {
     }
 
     //thong tin ve ssh se duoc cung cap cho controller
-    public int getCurrentThreadActive() {    
+    public int getCurrentThreadActive() {
         return CurrentThreadActive;
     }
 
