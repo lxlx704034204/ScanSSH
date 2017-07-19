@@ -32,7 +32,7 @@ public class ScanSSH {
     private long TotalIps = 0;
     private long TotalIpsChecked = 0;
     private int NumberOfThreads;// truyen vao tu controller
-    private Integer NumberOfIpsLive = 0;
+    private int NumberOfIpsLive = 0;
     private int CurrentThreadActive = 0;
     // du lieu de ssh hoat dong
     private static Object syncObj = new Object();
@@ -100,12 +100,7 @@ public class ScanSSH {
         thread = new Thread[NumberOfThreads];
         //tao mang bit_check
         Bit_CheckIps = new boolean[NumberOfThreads];
-        //run thread
-        for (int i = 0; i < NumberOfThreads; i++) {
-            Run(i);
-            Thread.sleep(100);
-        }
-
+        //
         Thread manager = new Thread() {
             @Override
             public void run() {
@@ -118,6 +113,11 @@ public class ScanSSH {
             }
         };
         manager.start();
+        //run thread
+        for (int i = 0; i < NumberOfThreads; i++) {
+            Run(i);
+            Thread.sleep(100);
+        }
 
         //tao thread check viec dung
         ThreadCheckStop = new Thread() {
@@ -190,15 +190,14 @@ public class ScanSSH {
                 if (IndexOfListRange >= TotalRange && CurrentThreadActive == 0) {
                     break;
                 } else {
-//                    System.out.println("CurrentThreadActive:" + CurrentThreadActive + " TotalIpsChecked : "
-//                            + TotalIpsChecked + " NumberOfIpsLive: " + NumberOfIpsLive);
+                    System.out.println("CurrentThreadActive:" + CurrentThreadActive + " TotalIpsChecked : "
+                            + TotalIpsChecked + " NumberOfIpsLive: " + NumberOfIpsLive);
 
-                    System.out.println(" NumberOfIpsLive: " + NumberOfIpsLive);
-//                    CurrentThreadActive2 = CurrentThreadActive;
-//                    NumberOfIpsLive2 = NumberOfIpsLive;
-//                    TotalIps2 = TotalIps;
-//                    TotalIpsChecked2 = TotalIpsChecked;
-//                    NumberOfThreads2 = NumberOfThreads;
+                    CurrentThreadActive2 = CurrentThreadActive;
+                    NumberOfIpsLive2 = NumberOfIpsLive;
+                    TotalIps2 = TotalIps;
+                    TotalIpsChecked2 = TotalIpsChecked;
+                    NumberOfThreads2 = NumberOfThreads;
                 }
             }
 
