@@ -79,6 +79,14 @@ public class ScanSSHController {
         return "ScanSSH";
     }
 
+    @RequestMapping(value = {"/AutoUpdate"}, method = RequestMethod.GET)
+    public String AutoUpdate(ModelMap mm, HttpSession session,
+            @RequestParam("url") String url) {
+        session.setAttribute("url", url + "/UpdateCheckSsh");
+
+        return "redirect:/ResultSSH";
+    }
+
     @RequestMapping(value = {"/ResultSSH"}, method = RequestMethod.GET)
     public String ResultSSH(ModelMap mm) {
         float tongssh = scanSSH.getTotalIps();

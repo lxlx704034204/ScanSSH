@@ -180,7 +180,7 @@ public class ScanSSH {
     public void manager() {
         try {
             while (true) {
-                Thread.sleep(1500);
+                Thread.sleep(3000);
 
                 if (IndexOfListRange >= TotalRange && CurrentThreadActive == 0) {
                     break;

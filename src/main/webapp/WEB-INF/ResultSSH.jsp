@@ -21,6 +21,18 @@
         <c:if test="${not empty sshlive}">sshlive : ${sshlive}</c:if>
         <c:if test="${not empty threadactive}">tong thread dang active : ${threadactive}</c:if>
         <c:if test="${not empty message}">message : ${message}</c:if>
+        <s:url value="AutoUpdate" var="AutoUpdate"/>
+
+        <form:form method="get" action="${AutoUpdate}">
+            <div class="box-body">
+                <div class="form-group">
+                    <label>url cua trang web</label>
+                    <input type="text" name="url"  />
+                </div>
+                <button type="submit">update</button>
+            </div>
+        </form:form>
+
         <c:if test="${not empty listsInfo}">
             <table id="example2" class="table table-bordered table-hover">
                 <thead>
@@ -70,7 +82,7 @@
             <a href="${SaveSsh}">Save ssh on ftp server</a>
 
         </div>
-     
+
 
 
         <div class="col-xs-12">
