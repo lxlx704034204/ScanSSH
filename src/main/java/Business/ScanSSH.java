@@ -32,7 +32,7 @@ public class ScanSSH {
     private long TotalIps = 0;
     private long TotalIpsChecked = 0;
     private int NumberOfThreads;// truyen vao tu controller
-    private int NumberOfIpsLive = 0;
+    private Integer NumberOfIpsLive = 0;
     private int CurrentThreadActive = 0;
     // du lieu de ssh hoat dong
     private static Object syncObj = new Object();
@@ -190,13 +190,15 @@ public class ScanSSH {
                 if (IndexOfListRange >= TotalRange && CurrentThreadActive == 0) {
                     break;
                 } else {
-                    System.out.println("CurrentThreadActive:" + CurrentThreadActive + " TotalIpsChecked : "
-                            + TotalIpsChecked + " NumberOfIpsLive: " + NumberOfIpsLive);
-                    CurrentThreadActive2 = CurrentThreadActive;
-                    NumberOfIpsLive2 = NumberOfIpsLive;
-                    TotalIps2 = TotalIps;
-                    TotalIpsChecked2 = TotalIpsChecked;
-                    NumberOfThreads2 = NumberOfThreads;
+//                    System.out.println("CurrentThreadActive:" + CurrentThreadActive + " TotalIpsChecked : "
+//                            + TotalIpsChecked + " NumberOfIpsLive: " + NumberOfIpsLive);
+
+                    System.out.println(" NumberOfIpsLive: " + NumberOfIpsLive);
+//                    CurrentThreadActive2 = CurrentThreadActive;
+//                    NumberOfIpsLive2 = NumberOfIpsLive;
+//                    TotalIps2 = TotalIps;
+//                    TotalIpsChecked2 = TotalIpsChecked;
+//                    NumberOfThreads2 = NumberOfThreads;
                 }
             }
 
