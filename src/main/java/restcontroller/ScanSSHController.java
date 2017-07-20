@@ -71,21 +71,9 @@ public class ScanSSHController {
     public String UpdateCheckSsh1(ModelMap mm) {
 
         try {
-            Thread check = new Thread() {
-                @Override
-                public void run() {
-                    try {
 
-                        List<String> lists = getInfoService.getListFileOnSFtpServer();
-                        mm.addAttribute("listsFile", lists);
-
-                    } catch (Exception e) {
-                        e.getMessage();
-                    }
-
-                }
-            };
-            check.start();
+            List<String> lists = getInfoService.getListFileOnSFtpServer();
+            mm.addAttribute("listsFile", lists);
 
         } catch (Exception e) {
         }
