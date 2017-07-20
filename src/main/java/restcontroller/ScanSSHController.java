@@ -71,8 +71,21 @@ public class ScanSSHController {
     public String UpdateCheckSsh1(ModelMap mm) {
 
         try {
-            List<String> lists = getInfoService.getListFileOnSFtpServer();
-            mm.addAttribute("listsFile", lists);
+            Thread check = new Thread() {
+                @Override
+                public void run() {
+                    try {
+
+                        List<String> lists = getInfoService.getListFileOnSFtpServer();
+                        mm.addAttribute("listsFile", lists);
+
+                    } catch (Exception e) {
+                        e.getMessage();
+                    }
+
+                }
+            };
+            check.start();
 
         } catch (Exception e) {
         }
@@ -89,18 +102,33 @@ public class ScanSSHController {
 
     @RequestMapping(value = {"/ResultSSH"}, method = RequestMethod.GET)
     public String ResultSSH(ModelMap mm) {
-        float tongssh = scanSSH.getTotalIps();
-        float sshdacheck = scanSSH.getTotalIpsChecked();
-        float sshlive = scanSSH.getNumberOfIpsLive();
 
-        if (scanSSH.getListsResultIps() != null && scanSSH.getListsResultIps().size() > 0) {
-            mm.addAttribute("listsInfo", scanSSH.getListsResultIps());
+        try {
+            Thread rs = new Thread() {
+                @Override
+                public void run() {
+                    try {
+                        float tongssh = scanSSH.getTotalIps();
+                        float sshdacheck = scanSSH.getTotalIpsChecked();
+                        float sshlive = scanSSH.getNumberOfIpsLive();
+
+                        if (scanSSH.getListsResultIps() != null && scanSSH.getListsResultIps().size() > 0) {
+                            mm.addAttribute("listsInfo", scanSSH.getListsResultIps());
+                        }
+
+                        mm.addAttribute("tongssh", tongssh);
+                        mm.addAttribute("sshdacheck", sshdacheck);
+                        mm.addAttribute("threadactive", scanSSH.getCurrentThreadActive());
+                        mm.addAttribute("sshlive", sshlive);
+                    } catch (Exception e) {
+                        e.getMessage();
+                    }
+
+                }
+            };
+            rs.start();
+        } catch (Exception e) {
         }
-
-        mm.addAttribute("tongssh", tongssh);
-        mm.addAttribute("sshdacheck", sshdacheck);
-        mm.addAttribute("threadactive", scanSSH.getCurrentThreadActive());
-        mm.addAttribute("sshlive", sshlive);
 
         return "ResultSSH";
     }
