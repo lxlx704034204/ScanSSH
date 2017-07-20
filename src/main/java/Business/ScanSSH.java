@@ -149,18 +149,20 @@ public class ScanSSH {
             }
             CurrentThreadActive++;
             createThreadToScan(i);
-            Thread.sleep(100);
+            
         }
 
         Thread makeThread = new Thread() {
             @Override
             public void run() {
                 try {
+                    CurrentThreadActive=0;
                     for (int i = 0; i < NumberOfThreads; i++) {
                         if (!FlagActive) {
                             break;
                         }
                         thread[i].start();
+                        //Thread.sleep(100);
                         FlagBegin=true;
                     }
                 } catch (Exception e) {
