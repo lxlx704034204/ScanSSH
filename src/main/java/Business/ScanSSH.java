@@ -147,6 +147,7 @@ public class ScanSSH {
             if (!FlagActive) {
                 break;
             }
+            CurrentThreadActive++;
             createThreadToScan(i);
             Thread.sleep(100);
         }
