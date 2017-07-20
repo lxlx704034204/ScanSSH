@@ -59,6 +59,7 @@ public class ScanSSH {
     private boolean flag = true;
     private boolean FlagActive = false;
     private boolean FlagStop = false;
+    private boolean FlagBegin = false;
     private String HostCheckFresh = "checkip.dyndns.org";
     private int PortCheckFresh = 80;
     //
@@ -159,6 +160,7 @@ public class ScanSSH {
                             break;
                         }
                         thread[i].start();
+                        FlagBegin=true;
                     }
                 } catch (Exception e) {
                     e.getMessage();
@@ -166,7 +168,7 @@ public class ScanSSH {
             }
         };
         makeThread.start();
-
+        
     }
 
     public void CheckStopAndUpload() throws FileNotFoundException, InterruptedException {
@@ -184,12 +186,13 @@ public class ScanSSH {
                     break;
                 } else {
                     //false
-                    flag = false;
-                    for (int i = 0; i < thread.length; i++) {
+                    if (FlagBegin) {
+                        flag = false;
+                        for (int i = 0; i < thread.length; i++) {
 
-                        flag = flag || thread[i].isAlive();
+                            flag = flag || thread[i].isAlive();
+                        }
                     }
-
                 }
             } catch (Exception e) {
                 e.getMessage();
