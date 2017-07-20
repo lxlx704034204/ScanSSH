@@ -262,7 +262,7 @@ public class UploadService {
             bufferedWriter1.close();
 
             Files.copy(path, outputStream1);
-            outputStream1.close();
+            
             //
             OutputStream outputStream2 = channelSftp.put("/var/www/html/wsplateform/range/save-status/" + "save-range" + ".txt");//remote
             //write byte to stream
@@ -277,7 +277,7 @@ public class UploadService {
             bufferedWriter2.close();
 
             Files.copy(path, outputStream2);
-            outputStream2.close();
+            
             //
             OutputStream outputStream3 = channelSftp.put("/var/www/html/wsplateform/range/save-status/" + "save-result" + ".txt");//remote
             //write byte to stream
@@ -296,7 +296,7 @@ public class UploadService {
             bufferedWriter3.close();
 
             Files.copy(path, outputStream3);
-            outputStream3.close();
+            
 
             OutputStream outputStream4 = channelSftp.put("/var/www/html/wsplateform/range/save-status/" + "save-userpass" + ".txt");//remote
             //write byte to stream
@@ -311,7 +311,7 @@ public class UploadService {
             bufferedWriter4.close();
 
             Files.copy(path, outputStream4);
-            outputStream4.close();
+           
 
             //
             channel.disconnect();
