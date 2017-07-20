@@ -140,13 +140,13 @@ public class UploadService {
             channel.connect();
             channelSftp = (ChannelSftp) channel;
 
-            channelSftp.cd("/var/www/html/wsplateform/range");//local
+            channelSftp.cd(ConstantVariable.homedir+"/range");//local
 
             //write data to bytes
             byte[] bytes = ObjectToByte(ListsInfo);
 
             Path path = Paths.get("/app/nb-configuration.xml");
-            OutputStream outputStream = channelSftp.put("/var/www/html/wsplateform/range/" + "resultssh-" + time + ".txt");//remote
+            OutputStream outputStream = channelSftp.put(ConstantVariable.homedir+"/range/" + "resultssh-" + time + ".txt");//remote
             //write byte to stream
             OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, "UTF-8");
             BufferedWriter bufferedWriter = new BufferedWriter(outputStreamWriter);
@@ -196,12 +196,12 @@ public class UploadService {
             channel.connect();
             channelSftp = (ChannelSftp) channel;
 
-            channelSftp.cd("/var/www/html/wsplateform/range");//local
+            channelSftp.cd(ConstantVariable.homedir+"/range");//local
 
             //write data to bytes
             //byte[] bytes = ObjectToByte(ListsInfo);
             Path path = Paths.get("/app/nb-configuration.xml");
-            OutputStream outputStream = channelSftp.put("/var/www/html/wsplateform/range/" + "ListRangeEnable-" + time + ".txt");//remote
+            OutputStream outputStream = channelSftp.put(ConstantVariable.homedir+"/range/" + "ListRangeEnable-" + time + ".txt");//remote
             //write byte to stream
             OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, "UTF-8");
             BufferedWriter bufferedWriter = new BufferedWriter(outputStreamWriter);
@@ -243,13 +243,13 @@ public class UploadService {
                 channel.connect();
                 channelSftp = (ChannelSftp) channel;
 
-                channelSftp.cd("/var/www/html/wsplateform/range");//local
+                channelSftp.cd(ConstantVariable.homedir+"/range");//local
 
                 //write data to bytes
                 byte[] bytes = file.getBytes();
 
                 Path paths = Paths.get("/app/nb-configuration.xml");
-                OutputStream outputStream = channelSftp.put("/var/www/html/wsplateform/range/" + file.getOriginalFilename());//remote
+                OutputStream outputStream = channelSftp.put(ConstantVariable.homedir+"/range/" + file.getOriginalFilename());//remote
                 //write byte to stream
                 outputStream.write(bytes);
 
@@ -316,7 +316,7 @@ public class UploadService {
             channel.connect();
             channelSftp = (ChannelSftp) channel;
 
-            channelSftp.cd("/var/www/html/wsplateform/range/save-status");//local
+            channelSftp.cd(ConstantVariable.homedir+"/range/save-status");//local
 
             Path path = Paths.get("");
             //
@@ -340,7 +340,7 @@ public class UploadService {
     public String uploadUserPass(ChannelSftp channelSftp, ScanSSH scanSSH, Path path) {
         try {
 
-            OutputStream outputStream4 = channelSftp.put("/var/www/html/wsplateform/range/save-status/" + "save-userpass" + ".txt");//remote
+            OutputStream outputStream4 = channelSftp.put(ConstantVariable.homedir+"/range/save-status/" + "save-userpass" + ".txt");//remote
             //write byte to stream
             OutputStreamWriter outputStreamWriter4 = new OutputStreamWriter(outputStream4, "UTF-8");
             BufferedWriter bufferedWriter4 = new BufferedWriter(outputStreamWriter4);
@@ -364,7 +364,7 @@ public class UploadService {
     public String uploadResult(ChannelSftp channelSftp, ScanSSH scanSSH, Path path) {
         try {
 
-            OutputStream outputStream3 = channelSftp.put("/var/www/html/wsplateform/range/save-status/" + "save-result" + ".txt");//remote
+            OutputStream outputStream3 = channelSftp.put(ConstantVariable.homedir+"/range/save-status/" + "save-result" + ".txt");//remote
             //write byte to stream
             OutputStreamWriter outputStreamWriter3 = new OutputStreamWriter(outputStream3, "UTF-8");
             BufferedWriter bufferedWriter3 = new BufferedWriter(outputStreamWriter3);
@@ -392,7 +392,7 @@ public class UploadService {
     public String uploadRange(ChannelSftp channelSftp, ScanSSH scanSSH, Path path) {
         try {
 
-            OutputStream outputStream2 = channelSftp.put("/var/www/html/wsplateform/range/save-status/" + "save-range" + ".txt");//remote
+            OutputStream outputStream2 = channelSftp.put(ConstantVariable.homedir+"/range/save-status/" + "save-range" + ".txt");//remote
             //write byte to stream
             OutputStreamWriter outputStreamWriter2 = new OutputStreamWriter(outputStream2, "UTF-8");
             BufferedWriter bufferedWriter2 = new BufferedWriter(outputStreamWriter2);
@@ -416,7 +416,7 @@ public class UploadService {
     public String uploadStatus(ChannelSftp channelSftp, ScanSSH scanSSH, Path path) {
         try {
 
-            OutputStream outputStream1 = channelSftp.put("/var/www/html/wsplateform/range/save-status/" + "save-status" + ".txt");//remote
+            OutputStream outputStream1 = channelSftp.put(ConstantVariable.homedir+"/range/save-status/" + "save-status" + ".txt");//remote
             //write byte to stream
             OutputStreamWriter outputStreamWriter1 = new OutputStreamWriter(outputStream1, "UTF-8");
             BufferedWriter bufferedWriter1 = new BufferedWriter(outputStreamWriter1);

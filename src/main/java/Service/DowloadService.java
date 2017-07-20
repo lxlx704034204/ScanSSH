@@ -119,7 +119,7 @@ public class DowloadService {
             channel.connect();
             channelSftp = (ChannelSftp) channel;
 
-            inputStream = channelSftp.get("/var/www/html/wsplateform/range/" + filename);
+            inputStream = channelSftp.get(ConstantVariable.homedir+"/range/" + filename);
 
             // get MIME type of the file
             String mimeType = null;

@@ -22,7 +22,7 @@ public class DeleteService {
 
     public String delFileOnSFtpServer(String filename) {
         try {
-            String path = ("/var/www/html/wsplateform/range/");
+            String path = (ConstantVariable.homedir+"/range/");
             Channel channel = null;
             ChannelSftp channelSftp = null;
             session.setTimeout(15000);

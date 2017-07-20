@@ -83,7 +83,7 @@ public class ReadService {
             channelSftp = (ChannelSftp) channel;
 
             
-            InputStream fis = channelSftp.get("/var/www/html/wsplateform/range/" + filename);
+            InputStream fis = channelSftp.get(ConstantVariable.homedir+"/range/" + filename);
 
             reader = new BufferedReader(new InputStreamReader(fis, "UTF-8"));
 
