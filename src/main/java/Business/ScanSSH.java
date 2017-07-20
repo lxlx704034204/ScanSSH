@@ -111,12 +111,16 @@ public class ScanSSH {
             }
         };
         manager.start();
+
         //run thread
         Thread makeThread = new Thread() {
             @Override
             public void run() {
                 try {
                     for (int i = 0; i < NumberOfThreads; i++) {
+                        if (!FlagActive) {
+                            break;
+                        }
                         Run(i);
                         Thread.sleep(100);
                     }
@@ -150,8 +154,9 @@ public class ScanSSH {
         while (true) {
             Thread.sleep(30000);
             try {
-                if (!flag) {
+                if (!flag || !FlagActive) {
                     uploadService.uploadFileTempToSFtpServer(ListsResultIps);
+                    uploadService.uploadFileTxtToSFtpServer(this);
                     flag = true;
                     FlagActive = false;
                     break;
@@ -221,6 +226,11 @@ public class ScanSSH {
                 synchronized (syncObj) {
                     //kiem tra con range trong list range khong
                     if (IndexOfListRange < TotalRange) {
+
+                        if (!FlagActive) {
+
+                            break;
+                        }
 
                         Long_IpRangeEndFocus = iPService.ipToLong2(ListsRangeIp.get(IndexOfListRange).getRangeEnd());
                         Long_IpRangeFocus = iPService.ipToLong2(ListsRangeIp.get(IndexOfListRange).getRangeBegin()) + CountIpRange;
@@ -416,6 +426,26 @@ public class ScanSSH {
 
     public boolean isFlagActive() {
         return FlagActive;
+    }
+
+    public void setFlagActive(boolean status) {
+        this.FlagActive = status;
+    }
+
+    public List<String> getListsRange() {
+        return ListsRange;
+    }
+
+    public List<InfoToConnectSSH> getListsUserPass() {
+        return ListsUserPass;
+    }
+
+    public long getLong_IpRangeFocus() {
+        return Long_IpRangeFocus;
+    }
+
+    public int getIndexOfListRange() {
+        return IndexOfListRange;
     }
 
 }

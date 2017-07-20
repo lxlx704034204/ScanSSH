@@ -33,7 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class TestController {
-
+    
     @Autowired
     IPService iPService;
     @Autowired
@@ -46,13 +46,13 @@ public class TestController {
     UploadService uploadService;
     @Autowired
     CheckSSHLive checkSSHLive;
-
+    
     @RequestMapping(value = "/test", method = RequestMethod.GET)
     public String test(
             @RequestParam("name") String name
     ) {
         try {
-
+            
             List<String> range = new ArrayList<>();
             List<String> userpass = readService.readFileTMPFromSFtpServer(name);
             List<InfoToConnectSSH> info = new ArrayList<>();
@@ -67,14 +67,14 @@ public class TestController {
             scanSSH.setListsUserPass(info);
             scanSSH.setNumberOfThreads(2);
             scanSSH.StartSetting();
-
+            
             int a = 0;
         } catch (Exception e) {
             e.getMessage();
         }
         return "test ";
     }
-
+    
     @RequestMapping(value = "/testupload", method = RequestMethod.GET)
     public String test2() {
         try {
@@ -88,7 +88,7 @@ public class TestController {
         }
         return "test ";
     }
-
+    
     @RequestMapping(value = "/testread", method = RequestMethod.GET)
     public String testread() {
         try {
@@ -99,7 +99,7 @@ public class TestController {
         }
         return "test ";
     }
-
+    
     @RequestMapping(value = "/testlistfile", method = RequestMethod.GET)
     public String testlistfile() {
         try {
@@ -110,7 +110,7 @@ public class TestController {
         }
         return "test ";
     }
-
+    
     @RequestMapping(value = "/testcheckssh", method = RequestMethod.GET)
     public String testcheckssh(
             @RequestParam("name") String name,
@@ -127,21 +127,33 @@ public class TestController {
         }
         return "test ";
     }
-
+    
     @RequestMapping(value = "/testport", method = RequestMethod.GET)
     public String testport() throws MalformedURLException, IOException {
-
+        
         Socket soket = new Socket();
         try {
             soket.connect(new InetSocketAddress("117.253.105.180", 22), 15000);
             soket.close();
-
+            
         } catch (Exception e) {
             e.getMessage();
             soket.close();
         }
-
+        
         return "test ";
     }
-
+    
+    @RequestMapping(value = "/stop", method = RequestMethod.GET)
+    public String stop() {
+        
+        try {
+            scanSSH.setFlagActive(false);
+        } catch (Exception e) {
+            
+        }
+        
+        return "test ";
+    }
+    
 }
