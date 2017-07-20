@@ -149,7 +149,7 @@ public class ScanSSH {
             }
             CurrentThreadActive++;
             createThreadToScan(i);
-            
+            Thread.sleep(10);
         }
 
         Thread makeThread = new Thread() {
@@ -162,7 +162,7 @@ public class ScanSSH {
                             break;
                         }
                         thread[i].start();
-                        //Thread.sleep(100);
+                        Thread.sleep(10);
                         FlagBegin=true;
                     }
                 } catch (Exception e) {
