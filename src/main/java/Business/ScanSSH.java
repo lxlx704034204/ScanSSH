@@ -98,13 +98,13 @@ public class ScanSSH {
         thread = new Thread[NumberOfThreads];
         //tao mang bit_check
         Bit_CheckIps = new boolean[NumberOfThreads];
-        //
+        //set thoi gian se tat
         Thread CheckTime = new Thread() {
             @Override
             public void run() {
                 try {
                     Thread.sleep(82800000);
-                    FlagActive=false;
+                    FlagActive = false;
                 } catch (Exception e) {
                     e.getMessage();
                 }
@@ -112,7 +112,7 @@ public class ScanSSH {
             }
         };
         CheckTime.start();
-        //
+        //kiem tra tinh trang chay
         Thread manager = new Thread() {
             @Override
             public void run() {
@@ -125,26 +125,6 @@ public class ScanSSH {
             }
         };
         manager.start();
-
-        //run thread
-        Thread makeThread = new Thread() {
-            @Override
-            public void run() {
-                try {
-                    for (int i = 0; i < NumberOfThreads; i++) {
-                        if (!FlagActive) {
-                            break;
-                        }
-                        Run(i);
-                        Thread.sleep(100);
-                    }
-                } catch (Exception e) {
-                    e.getMessage();
-                }
-
-            }
-        };
-        makeThread.start();
         //tao thread check viec dung
         ThreadCheckStop = new Thread() {
             @Override
@@ -157,8 +137,27 @@ public class ScanSSH {
 
             }
         };
-        Thread.sleep(60000);
+        Thread.sleep(30000);
         ThreadCheckStop.start();
+        //run tao thread de scan
+        Thread makeThread = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    for (int i = 0; i < NumberOfThreads; i++) {
+                        if (!FlagActive) {
+                            break;
+                        }
+                        createThreadToScan(i);
+                        Thread.sleep(100);
+                    }
+                } catch (Exception e) {
+                    e.getMessage();
+                }
+
+            }
+        };
+        makeThread.start();
 
     }
 
@@ -192,7 +191,7 @@ public class ScanSSH {
 
     }
 
-    public void Run(int id_thread) {
+    public void createThreadToScan(int id_thread) {
 
         thread[id_thread] = new Thread() {
             @Override
@@ -214,8 +213,6 @@ public class ScanSSH {
         try {
             while (true) {
                 Thread.sleep(3000);
-                OperatingSystemMXBean osBean = ManagementFactory.getPlatformMXBean(
-                        OperatingSystemMXBean.class);
                 if (!FlagActive) {
                     break;
                 }
@@ -224,8 +221,7 @@ public class ScanSSH {
                 } else {
                     System.out.println("CurrentThreadActive:" + CurrentThreadActive + " TotalIpsChecked : "
                             + TotalIpsChecked + " NumberOfIpsLive: " + NumberOfIpsLive);
-                    System.out.println("process : " + osBean.getProcessCpuLoad());
-                    System.out.println("cpu : " + osBean.getSystemCpuLoad());
+                    
                 }
             }
 
@@ -272,14 +268,7 @@ public class ScanSSH {
                     }
 
                 }
-                synchronized (syncObjcpu) {
-                    CurrentThreadActive++;
 
-                }
-                
-                synchronized (syncObjcpu) {
-                    CurrentThreadActive--;
-                }
                 if (L_IpBeginTemp <= L_IpEndTemp) {
                     for (int i = 0; i < ListsUserPass.size(); i++) {
                         byte check = CHECK_LIVE(S_IpBeginTemp, ListsUserPass.get(i).getUsername(), ListsUserPass.get(i).getPassword(), id_thread);
@@ -297,8 +286,6 @@ public class ScanSSH {
                         }
                     }
                 }
-
-                
 
             }
         } catch (Exception e) {
@@ -399,6 +386,7 @@ public class ScanSSH {
 
     }
 
+    //geter/seter
     public long getTotalIps() {
         return TotalIps;
     }
@@ -415,7 +403,6 @@ public class ScanSSH {
         return NumberOfIpsLive;
     }
 
-    //thong tin ve ssh se duoc cung cap cho controller
     public int getCurrentThreadActive() {
         return CurrentThreadActive;
     }

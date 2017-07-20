@@ -116,19 +116,29 @@ public class TaskController {
         return "ListInfo";
     }
 
-  
     @RequestMapping(value = "/SaveSsh", method = RequestMethod.GET)
     public String SaveSsh(RedirectAttributes redirectAttrs) {
-        String message = "";
+
         try {
-            uploadService.uploadFileTempToSFtpServer(scanSSH.getListsResultIps());
-            message = "upload thanh cong : so ssh :" + scanSSH.getListsResultIps().size();
+
+            Thread thread = new Thread() {
+                @Override
+                public void run() {
+                    try {
+                        uploadService.uploadFileTempToSFtpServer(scanSSH.getListsResultIps());
+                    } catch (Exception e) {
+                        e.getMessage();
+                    }
+
+                }
+            };
+            thread.start();
 
         } catch (Exception e) {
-            message = e.getMessage();
+            e.getMessage();
         }
-        redirectAttrs.addFlashAttribute("message", message);
-        return "redirect:/ResultSSH ";
+
+        return "ResultSSH ";
     }
 
     @RequestMapping(value = "/dowloadFile", method = RequestMethod.POST)
@@ -139,7 +149,7 @@ public class TaskController {
             HttpServletResponse response) {
         String message = "";
         try {
-            
+
             dowloadService.dowloadFileFromSFTPServer(name, request, response);
             Thread.sleep(1000);
         } catch (Exception e) {
@@ -163,16 +173,6 @@ public class TaskController {
         return "redirect:/getListFile ";
     }
 
-    @RequestMapping(value = "/dowloadSsh", method = RequestMethod.GET)
-    public String dowloadSsh(RedirectAttributes redirectAttrs) {
-        String message = "";
-        try {
-            message = dowloadService.dowloadFile();
-        } catch (Exception e) {
-            message = e.getMessage();
-        }
-        redirectAttrs.addFlashAttribute("message", message);
-        return "redirect:/ResultSSH ";
-    }
+  
 
 }
