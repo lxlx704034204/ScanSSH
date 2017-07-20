@@ -138,7 +138,7 @@ public class TaskController {
             e.getMessage();
         }
 
-        return "ResultSSH ";
+        return "ResultSSH";
     }
 
     @RequestMapping(value = "/dowloadFile", method = RequestMethod.POST)
