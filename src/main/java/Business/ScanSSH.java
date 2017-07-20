@@ -58,6 +58,7 @@ public class ScanSSH {
     private int IndexOfListRange = 0;
     private boolean flag = true;
     private boolean FlagActive = false;
+    private boolean FlagStop = false;
     private String HostCheckFresh = "checkip.dyndns.org";
     private int PortCheckFresh = 80;
     //
@@ -221,7 +222,7 @@ public class ScanSSH {
                 } else {
                     System.out.println("CurrentThreadActive:" + CurrentThreadActive + " TotalIpsChecked : "
                             + TotalIpsChecked + " NumberOfIpsLive: " + NumberOfIpsLive);
-                    
+
                 }
             }
 
@@ -244,6 +245,10 @@ public class ScanSSH {
                         if (!FlagActive) {
 
                             break;
+                        }
+
+                        if (FlagStop) {
+                            continue;
                         }
 
                         Long_IpRangeEndFocus = iPService.ipToLong2(ListsRangeIp.get(IndexOfListRange).getRangeEnd());
@@ -453,6 +458,14 @@ public class ScanSSH {
 
     public int getIndexOfListRange() {
         return IndexOfListRange;
+    }
+
+    public boolean isFlagStop() {
+        return FlagStop;
+    }
+
+    public void setFlagStop(boolean FlagStop) {
+        this.FlagStop = FlagStop;
     }
 
 }

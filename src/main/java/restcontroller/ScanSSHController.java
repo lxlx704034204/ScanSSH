@@ -96,6 +96,7 @@ public class ScanSSHController {
                 @Override
                 public void run() {
                     try {
+                        scanSSH.setFlagStop(true);
                         float tongssh = scanSSH.getTotalIps();
                         float sshdacheck = scanSSH.getTotalIpsChecked();
                         float sshlive = scanSSH.getNumberOfIpsLive();
@@ -108,6 +109,8 @@ public class ScanSSHController {
                         mm.addAttribute("sshdacheck", sshdacheck);
                         mm.addAttribute("threadactive", scanSSH.getCurrentThreadActive());
                         mm.addAttribute("sshlive", sshlive);
+
+                        scanSSH.setFlagStop(false);
                     } catch (Exception e) {
                         e.getMessage();
                     }
