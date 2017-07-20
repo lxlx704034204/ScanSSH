@@ -72,6 +72,8 @@ public class ScanSSH {
     //khoi tao cac gia tri ban dau
     public void StartSetting() throws InterruptedException {
         String Message = "";
+
+        // trang thai dang chay
         FlagActive = true;
         //tao list range ip
         ListsRangeIp = iPService.getListRange(ListsRange);
@@ -138,9 +140,16 @@ public class ScanSSH {
 
             }
         };
-        Thread.sleep(30000);
         ThreadCheckStop.start();
         //run tao thread de scan
+        for (int i = 0; i < NumberOfThreads; i++) {
+            if (!FlagActive) {
+                break;
+            }
+            createThreadToScan(i);
+            Thread.sleep(100);
+        }
+
         Thread makeThread = new Thread() {
             @Override
             public void run() {
@@ -149,13 +158,11 @@ public class ScanSSH {
                         if (!FlagActive) {
                             break;
                         }
-                        createThreadToScan(i);
-                        Thread.sleep(100);
+                        thread[i].start();
                     }
                 } catch (Exception e) {
                     e.getMessage();
                 }
-
             }
         };
         makeThread.start();
@@ -166,7 +173,7 @@ public class ScanSSH {
 //true
 
         while (true) {
-            Thread.sleep(30000);
+            Thread.sleep(10000);
 
             try {
                 if (!flag || !FlagActive) {
@@ -207,7 +214,7 @@ public class ScanSSH {
 
             }
         };
-        thread[id_thread].start();
+
     }
 
     public void manager() {
