@@ -54,14 +54,13 @@ public class TestController {
         try {
             
             List<String> range = new ArrayList<>();
-            List<String> userpass = readService.readFileTMPFromSFtpServer(name);
             List<InfoToConnectSSH> info = new ArrayList<>();
             InfoToConnectSSH i = new InfoToConnectSSH();
             i.setUsername("admin");
             i.setPassword("password");
             info.add(i);
             range.add("118.69.60.253-118.69.60.255");
-            range.add("118.70.181.50-118.70.181.59");
+            range.add("1113.161.32.25-113.161.32.27");
             //get file range
             scanSSH.setListsRange(range);
             scanSSH.setListsUserPass(info);

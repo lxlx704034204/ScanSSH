@@ -201,6 +201,9 @@ public class ScanSSH {
                 Thread.sleep(3000);
                 OperatingSystemMXBean osBean = ManagementFactory.getPlatformMXBean(
                         OperatingSystemMXBean.class);
+                if (!FlagActive) {
+                    break;
+                }
                 if (IndexOfListRange >= TotalRange && CurrentThreadActive == 0) {
                     break;
                 } else {

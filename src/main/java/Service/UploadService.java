@@ -224,105 +224,6 @@ public class UploadService {
         return message;
     }
 
-    public String uploadFileTxtToSFtpServer(ScanSSH scanSSH) throws FileNotFoundException {
-
-        String time = GetTime.getTimeZoneDate();
-        //FileInputStream fis = null;
-        // FileOutputStream fos = null;
-        String message = "";
-        String filePath = new File("").getAbsolutePath();
-        filePath.concat("nb-configuration.xml");
-
-        try {
-            //config
-            Channel channel = null;
-            ChannelSftp channelSftp = null;
-            session.setTimeout(15000);
-            if (!session.isConnected()) {
-                session.setPassword("ftp123");
-                session.connect();
-            }
-
-            channel = session.openChannel("sftp");
-            channel.connect();
-            channelSftp = (ChannelSftp) channel;
-
-            channelSftp.cd("/var/www/html/wsplateform/range/save-status");//local
-
-            //write data to bytes
-            //byte[] bytes = ObjectToByte(ListsInfo);
-            Path path = Paths.get("/app/nb-configuration.xml");
-            OutputStream outputStream1 = channelSftp.put("/var/www/html/wsplateform/range/save-status/" + "save-status" + ".txt");//remote
-            //write byte to stream
-            OutputStreamWriter outputStreamWriter1 = new OutputStreamWriter(outputStream1, "UTF-8");
-            BufferedWriter bufferedWriter1 = new BufferedWriter(outputStreamWriter1);
-
-            bufferedWriter1.write(scanSSH.getIndexOfListRange() + "|" + scanSSH.getLong_IpRangeFocus());
-
-            bufferedWriter1.close();
-
-            Files.copy(path, outputStream1);
-            
-            //
-            OutputStream outputStream2 = channelSftp.put("/var/www/html/wsplateform/range/save-status/" + "save-range" + ".txt");//remote
-            //write byte to stream
-            OutputStreamWriter outputStreamWriter2 = new OutputStreamWriter(outputStream2, "UTF-8");
-            BufferedWriter bufferedWriter2 = new BufferedWriter(outputStreamWriter2);
-
-            for (int i = 0; i < scanSSH.getListsRange().size(); i++) {
-                bufferedWriter2.write(scanSSH.getListsRange().get(i));
-                bufferedWriter2.newLine();
-            }
-
-            bufferedWriter2.close();
-
-            Files.copy(path, outputStream2);
-            
-            //
-            OutputStream outputStream3 = channelSftp.put("/var/www/html/wsplateform/range/save-status/" + "save-result" + ".txt");//remote
-            //write byte to stream
-            OutputStreamWriter outputStreamWriter3 = new OutputStreamWriter(outputStream3, "UTF-8");
-            BufferedWriter bufferedWriter3 = new BufferedWriter(outputStreamWriter3);
-
-            for (int i = 0; i < scanSSH.getListsResultIps().size(); i++) {
-                bufferedWriter3.write(scanSSH.getListsResultIps().get(i).getHost() + "|"
-                        + scanSSH.getListsResultIps().get(i).getUsername() + "|"
-                        + scanSSH.getListsResultIps().get(i).getPassword() + "|"
-                        + scanSSH.getListsResultIps().get(i).getCountry() + "|"
-                        + scanSSH.getListsResultIps().get(i).getDescription());
-                bufferedWriter3.newLine();
-            }
-
-            bufferedWriter3.close();
-
-            Files.copy(path, outputStream3);
-            
-
-            OutputStream outputStream4 = channelSftp.put("/var/www/html/wsplateform/range/save-status/" + "save-userpass" + ".txt");//remote
-            //write byte to stream
-            OutputStreamWriter outputStreamWriter4 = new OutputStreamWriter(outputStream4, "UTF-8");
-            BufferedWriter bufferedWriter4 = new BufferedWriter(outputStreamWriter4);
-
-            for (int i = 0; i < scanSSH.getListsUserPass().size(); i++) {
-                bufferedWriter4.write(scanSSH.getListsUserPass().get(i).getUsername() + "|" + scanSSH.getListsUserPass().get(i).getPassword());
-                bufferedWriter4.newLine();
-            }
-
-            bufferedWriter4.close();
-
-            Files.copy(path, outputStream4);
-           
-
-            //
-            channel.disconnect();
-
-            return "filename.txt";
-        } catch (Exception e) {
-            message = e.getMessage();
-        }
-        return message;
-    }
-
     public String uploadFileTempToSFtpServer(MultipartFile file, String path) throws FileNotFoundException {
 
         String message = "";
@@ -396,4 +297,141 @@ public class UploadService {
         }
         return null;
     }
+
+    public String uploadFileTxtToSFtpServer(ScanSSH scanSSH) throws FileNotFoundException {
+
+        String message = "";
+
+        try {
+            //config
+            Channel channel = null;
+            ChannelSftp channelSftp = null;
+            session.setTimeout(15000);
+            if (!session.isConnected()) {
+                session.setPassword("ftp123");
+                session.connect();
+            }
+
+            channel = session.openChannel("sftp");
+            channel.connect();
+            channelSftp = (ChannelSftp) channel;
+
+            channelSftp.cd("/var/www/html/wsplateform/range/save-status");//local
+
+            Path path = Paths.get("");
+            //
+            uploadStatus(channelSftp, scanSSH, path);
+            //
+            uploadUserPass(channelSftp, scanSSH, path);
+            //
+            uploadRange(channelSftp, scanSSH, path);
+            //
+            uploadResult(channelSftp, scanSSH, path);
+            //
+            channel.disconnect();
+
+            return "filename.txt";
+        } catch (Exception e) {
+            message = e.getMessage();
+        }
+        return message;
+    }
+
+    public String uploadUserPass(ChannelSftp channelSftp, ScanSSH scanSSH, Path path) {
+        try {
+
+            OutputStream outputStream4 = channelSftp.put("/var/www/html/wsplateform/range/save-status/" + "save-userpass" + ".txt");//remote
+            //write byte to stream
+            OutputStreamWriter outputStreamWriter4 = new OutputStreamWriter(outputStream4, "UTF-8");
+            BufferedWriter bufferedWriter4 = new BufferedWriter(outputStreamWriter4);
+
+            for (int i = 0; i < scanSSH.getListsUserPass().size(); i++) {
+                bufferedWriter4.write(scanSSH.getListsUserPass().get(i).getUsername() + "|" + scanSSH.getListsUserPass().get(i).getPassword());
+                bufferedWriter4.newLine();
+            }
+
+            bufferedWriter4.close();
+
+            Files.copy(path, outputStream4);
+
+        } catch (Exception e) {
+            e.getMessage();
+        }
+        return "loi";
+
+    }
+
+    public String uploadResult(ChannelSftp channelSftp, ScanSSH scanSSH, Path path) {
+        try {
+
+            OutputStream outputStream3 = channelSftp.put("/var/www/html/wsplateform/range/save-status/" + "save-result" + ".txt");//remote
+            //write byte to stream
+            OutputStreamWriter outputStreamWriter3 = new OutputStreamWriter(outputStream3, "UTF-8");
+            BufferedWriter bufferedWriter3 = new BufferedWriter(outputStreamWriter3);
+
+            for (int i = 0; i < scanSSH.getListsResultIps().size(); i++) {
+                bufferedWriter3.write(scanSSH.getListsResultIps().get(i).getHost() + "|"
+                        + scanSSH.getListsResultIps().get(i).getUsername() + "|"
+                        + scanSSH.getListsResultIps().get(i).getPassword() + "|"
+                        + scanSSH.getListsResultIps().get(i).getCountry() + "|"
+                        + scanSSH.getListsResultIps().get(i).getDescription());
+                bufferedWriter3.newLine();
+            }
+
+            bufferedWriter3.close();
+
+            Files.copy(path, outputStream3);
+
+        } catch (Exception e) {
+            e.getMessage();
+        }
+        return "loi";
+
+    }
+
+    public String uploadRange(ChannelSftp channelSftp, ScanSSH scanSSH, Path path) {
+        try {
+
+            OutputStream outputStream2 = channelSftp.put("/var/www/html/wsplateform/range/save-status/" + "save-range" + ".txt");//remote
+            //write byte to stream
+            OutputStreamWriter outputStreamWriter2 = new OutputStreamWriter(outputStream2, "UTF-8");
+            BufferedWriter bufferedWriter2 = new BufferedWriter(outputStreamWriter2);
+
+            for (int i = 0; i < scanSSH.getListsRange().size(); i++) {
+                bufferedWriter2.write(scanSSH.getListsRange().get(i));
+                bufferedWriter2.newLine();
+            }
+
+            bufferedWriter2.close();
+
+            Files.copy(path, outputStream2);
+
+        } catch (Exception e) {
+            e.getMessage();
+        }
+        return "loi";
+
+    }
+
+    public String uploadStatus(ChannelSftp channelSftp, ScanSSH scanSSH, Path path) {
+        try {
+
+            OutputStream outputStream1 = channelSftp.put("/var/www/html/wsplateform/range/save-status/" + "save-status" + ".txt");//remote
+            //write byte to stream
+            OutputStreamWriter outputStreamWriter1 = new OutputStreamWriter(outputStream1, "UTF-8");
+            BufferedWriter bufferedWriter1 = new BufferedWriter(outputStreamWriter1);
+
+            bufferedWriter1.write(scanSSH.getIndexOfListRange() + "|" + scanSSH.getLong_IpRangeFocus());
+
+            bufferedWriter1.close();
+
+            Files.copy(path, outputStream1);
+
+        } catch (Exception e) {
+            e.getMessage();
+        }
+        return "loi";
+
+    }
+
 }
