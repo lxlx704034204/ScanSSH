@@ -103,7 +103,7 @@ public class ScanSSH {
             @Override
             public void run() {
                 try {
-                    Thread.sleep(300000);
+                    Thread.sleep(82800000);
                     FlagActive=false;
                 } catch (Exception e) {
                     e.getMessage();
