@@ -99,6 +99,20 @@ public class ScanSSH {
         //tao mang bit_check
         Bit_CheckIps = new boolean[NumberOfThreads];
         //
+        Thread CheckTime = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(300000);
+                    FlagActive=false;
+                } catch (Exception e) {
+                    e.getMessage();
+                }
+
+            }
+        };
+        CheckTime.start();
+        //
         Thread manager = new Thread() {
             @Override
             public void run() {
@@ -153,6 +167,7 @@ public class ScanSSH {
 
         while (true) {
             Thread.sleep(30000);
+
             try {
                 if (!flag || !FlagActive) {
                     uploadService.uploadFileTempToSFtpServer(ListsResultIps);
