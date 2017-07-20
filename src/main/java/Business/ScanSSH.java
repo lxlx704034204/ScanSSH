@@ -276,6 +276,10 @@ public class ScanSSH {
                     CurrentThreadActive++;
 
                 }
+                
+                synchronized (syncObjcpu) {
+                    CurrentThreadActive--;
+                }
                 if (L_IpBeginTemp <= L_IpEndTemp) {
                     for (int i = 0; i < ListsUserPass.size(); i++) {
                         byte check = CHECK_LIVE(S_IpBeginTemp, ListsUserPass.get(i).getUsername(), ListsUserPass.get(i).getPassword(), id_thread);
@@ -294,9 +298,7 @@ public class ScanSSH {
                     }
                 }
 
-                synchronized (syncObjcpu) {
-                    CurrentThreadActive--;
-                }
+                
 
             }
         } catch (Exception e) {
