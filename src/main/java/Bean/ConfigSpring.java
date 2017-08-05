@@ -37,9 +37,9 @@ public class ConfigSpring {
     @Bean
     Session session() throws JSchException {
         Session session = null;
-        String host = "54.173.17.38";
-        String user = "ftp";
-        String password = "ftp123";
+        String host = ConstantVariable.ip;
+        String user = ConstantVariable.username;
+        String password = ConstantVariable.password;
         int port = 22;
         JSch s = new JSch();
         session = s.getSession(user, host, port);

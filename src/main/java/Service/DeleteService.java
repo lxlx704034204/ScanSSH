@@ -5,6 +5,7 @@
  */
 package Service;
 
+import Bean.ConstantVariable;
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSchException;
@@ -27,7 +28,7 @@ public class DeleteService {
             ChannelSftp channelSftp = null;
             session.setTimeout(15000);
             if (!session.isConnected()) {
-                session.setPassword("ftp123");
+                session.setPassword(ConstantVariable.password);
                 session.connect();
             }
 

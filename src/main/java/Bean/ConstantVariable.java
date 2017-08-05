@@ -3,12 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Service;
+package Bean;
 
-/**
- *
- * @author Alex
- */
 public interface ConstantVariable {
-    String homedir ="/home/ftp";
+
+    static String homedir = "/tmp/ftp";
+    static String password = "ubnt";
+    static String username = "ubnt";
+    static String ip = "113.161.73.246";
 }

@@ -5,6 +5,7 @@
  */
 package Service;
 
+import Bean.ConstantVariable;
 import Business.ScanSSH;
 import Pojos.InfoToConnectSSH;
 import com.jcraft.jsch.Channel;
@@ -111,7 +112,7 @@ public class DowloadService {
             ChannelSftp channelSftp = null;
             session.setTimeout(15000);
             if (!session.isConnected()) {
-                session.setPassword("ftp123");
+                session.setPassword(ConstantVariable.password);
                 session.connect();
             }
 

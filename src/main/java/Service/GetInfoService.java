@@ -5,6 +5,7 @@
  */
 package Service;
 
+import Bean.ConstantVariable;
 import Pojos.InfoToConnectSSH;
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelSftp;
@@ -111,7 +112,7 @@ public class GetInfoService {
             ChannelSftp channelSftp = null;
             session.setTimeout(15000);
             if (!session.isConnected()) {
-                session.setPassword("ftp123");
+                session.setPassword(ConstantVariable.password);
                 session.connect();
             }
 

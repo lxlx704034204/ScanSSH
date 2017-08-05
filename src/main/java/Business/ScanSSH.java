@@ -116,6 +116,8 @@ public class ScanSSH {
             }
         };
         CheckTime.start();
+       
+        
         //kiem tra tinh trang chay
         Thread manager = new Thread() {
             @Override
