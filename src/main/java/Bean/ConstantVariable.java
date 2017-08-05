@@ -7,7 +7,7 @@ package Bean;
 
 public interface ConstantVariable {
 
-    static String homedir = "/tmp/ftp";
+    static String homedir = "/config/ftp";
     static String password = "ubnt";
     static String username = "ubnt";
     static String ip = "113.161.73.246";
