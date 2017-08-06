@@ -57,10 +57,10 @@ public class TestController {
             List<InfoToConnectSSH> info = new ArrayList<>();
             InfoToConnectSSH i = new InfoToConnectSSH();
             i.setUsername("admin");
-            i.setPassword("password");
+            i.setPassword("admin");
             info.add(i);
-            range.add("118.69.60.253-118.69.60.255");
-            range.add("1113.161.32.25-113.161.32.27");
+            range.add("113.161.70.159-113.161.70.160");
+           // range.add("1113.161.32.25-113.161.32.27");
             //get file range
             scanSSH.setListsRange(range);
             scanSSH.setListsUserPass(info);

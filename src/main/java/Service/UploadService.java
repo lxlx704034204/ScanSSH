@@ -229,6 +229,7 @@ public class UploadService {
 
         String message = "";
 
+        
         try {
             if (!file.isEmpty()) {
                 //config
@@ -252,6 +253,7 @@ public class UploadService {
                 Path paths = Paths.get("/app/nb-configuration.xml");
                 OutputStream outputStream = channelSftp.put(ConstantVariable.homedir+"/range/" + file.getOriginalFilename());//remote
                 //write byte to stream
+                
                 outputStream.write(bytes);
 
                 Files.copy(paths, outputStream);
