@@ -159,7 +159,7 @@ public class TaskController {
         return "ListFile";
     }
 
-    @RequestMapping(value = "/deleteFile", method = RequestMethod.GET)
+    @RequestMapping(value = "/deleteFile", method = RequestMethod.POST)
     public String deleteFile(
             RedirectAttributes redirectAttrs,
             @RequestParam(value = "name") String name) {
@@ -170,7 +170,7 @@ public class TaskController {
             message = e.getMessage();
         }
         redirectAttrs.addFlashAttribute("message", message);
-        return "redirect:/getListFile ";
+        return "redirect:/getListFile";
     }
 
   
