@@ -159,7 +159,7 @@ public class TaskController {
         return "ListFile";
     }
 
-    @RequestMapping(value = "/deleteFile", method = RequestMethod.POST)
+    @RequestMapping(value = "/deleteFile", method = RequestMethod.GET)
     public String deleteFile(
             RedirectAttributes redirectAttrs,
             @RequestParam(value = "name") String name) {
