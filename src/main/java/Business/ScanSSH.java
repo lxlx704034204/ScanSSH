@@ -38,8 +38,6 @@ public class ScanSSH {
     private int CurrentThreadActive = 0;
     // du lieu de ssh hoat dong
     private static Object syncObj = new Object();
-    private static Object syncObjcpu = new Object();
-    private Object ObjThread = new Object();
 
     private Thread[] thread;
     private Thread ThreadCheckStop;
@@ -108,7 +106,9 @@ public class ScanSSH {
             public void run() {
                 try {
                     Thread.sleep(82800000);
+                    ThreadCheckStop.start();
                     FlagActive = false;
+
                 } catch (Exception e) {
                     e.getMessage();
                 }
@@ -116,8 +116,7 @@ public class ScanSSH {
             }
         };
         CheckTime.start();
-       
-        
+
         //kiem tra tinh trang chay
         Thread manager = new Thread() {
             @Override
@@ -143,7 +142,6 @@ public class ScanSSH {
 
             }
         };
-        ThreadCheckStop.start();
         //run tao thread de scan
         for (int i = 0; i < NumberOfThreads; i++) {
             if (!FlagActive) {
@@ -158,14 +156,14 @@ public class ScanSSH {
             @Override
             public void run() {
                 try {
-                    CurrentThreadActive=0;
+                    CurrentThreadActive = 0;
                     for (int i = 0; i < NumberOfThreads; i++) {
                         if (!FlagActive) {
                             break;
                         }
                         thread[i].start();
-                        Thread.sleep(10);
-                        FlagBegin=true;
+                        Thread.sleep(500);
+                        FlagBegin = true;
                     }
                 } catch (Exception e) {
                     e.getMessage();
@@ -173,7 +171,7 @@ public class ScanSSH {
             }
         };
         makeThread.start();
-        
+
     }
 
     public void CheckStopAndUpload() throws FileNotFoundException, InterruptedException {
@@ -284,6 +282,10 @@ public class ScanSSH {
 
                     } else {
                         CurrentThreadActive--;
+                        if (!ThreadCheckStop.isAlive()) {
+                            ThreadCheckStop.start();
+                        }
+
                         break;
                     }
 
