@@ -58,7 +58,8 @@ public class ScanSSH {
     private boolean FlagActive = false;
     private boolean FlagStop = false;
     private boolean FlagBegin = false;
-    private String HostCheckFresh = "checkip.dyndns.org";
+    //checkip.dyndns.org
+    private String HostCheckFresh = "icanhazip.com";
     private int PortCheckFresh = 80;
     //
     @Autowired
@@ -163,6 +164,7 @@ public class ScanSSH {
                         }
                         thread[i].start();
                         Thread.sleep(500);
+
                         FlagBegin = true;
                     }
                 } catch (Exception e) {
@@ -294,7 +296,7 @@ public class ScanSSH {
                 if (L_IpBeginTemp <= L_IpEndTemp) {
                     for (int i = 0; i < ListsUserPass.size(); i++) {
                         byte check = CHECK_LIVE(S_IpBeginTemp, ListsUserPass.get(i).getUsername(), ListsUserPass.get(i).getPassword(), id_thread);
-                        //System.out.println("ip :" + S_IpBeginTemp + " user :" + ListsUserPass.get(i).getUsername() + " pass : " + ListsUserPass.get(i).getPassword());
+                        System.out.println("ip :" + S_IpBeginTemp + " user :" + ListsUserPass.get(i).getUsername() + " pass : " + ListsUserPass.get(i).getPassword());
                         if (check == 1) {
 
                             InfoToConnectSSH info = new InfoToConnectSSH();
@@ -392,15 +394,9 @@ public class ScanSSH {
             session.setPassword(pass);
             session.connect();
 
-            //check fresh ip
-            Channel channel = session.openChannel("direct-tcpip");
-            ((ChannelDirectTCPIP) channel).setHost(HostCheckFresh);
-            ((ChannelDirectTCPIP) channel).setPort(PortCheckFresh);
-
-            channel.connect(10000);
-
             Bit_CheckIps[id] = true;
             NumberOfIpsLive++;
+
         } catch (Exception ex) {
             ex.getMessage();
 
