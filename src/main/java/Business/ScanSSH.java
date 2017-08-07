@@ -60,7 +60,8 @@ public class ScanSSH {
     private boolean FlagActive = false;
     private boolean FlagStop = false;
     private boolean FlagBegin = false;
-    private String HostCheckFresh = "checkip.dyndns.org";
+    //checkip.dyndns.org
+    private String HostCheckFresh = "icanhazip.com";
     private int PortCheckFresh = 80;
     //
     @Autowired
@@ -116,8 +117,7 @@ public class ScanSSH {
             }
         };
         CheckTime.start();
-       
-        
+
         //kiem tra tinh trang chay
         Thread manager = new Thread() {
             @Override
@@ -158,14 +158,14 @@ public class ScanSSH {
             @Override
             public void run() {
                 try {
-                    CurrentThreadActive=0;
+                    CurrentThreadActive = 0;
                     for (int i = 0; i < NumberOfThreads; i++) {
                         if (!FlagActive) {
                             break;
                         }
                         thread[i].start();
                         Thread.sleep(10);
-                        FlagBegin=true;
+                        FlagBegin = true;
                     }
                 } catch (Exception e) {
                     e.getMessage();
@@ -173,7 +173,7 @@ public class ScanSSH {
             }
         };
         makeThread.start();
-        
+
     }
 
     public void CheckStopAndUpload() throws FileNotFoundException, InterruptedException {
