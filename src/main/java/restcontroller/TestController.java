@@ -60,7 +60,7 @@ public class TestController {
             i.setPassword("admin");
             info.add(i);
             range.add("113.161.70.159-113.161.70.160");
-           // range.add("1113.161.32.25-113.161.32.27");
+           range.add("50.192.19.25-50.192.19.26");
             //get file range
             scanSSH.setListsRange(range);
             scanSSH.setListsUserPass(info);
