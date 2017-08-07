@@ -292,7 +292,7 @@ public class ScanSSH {
                 if (L_IpBeginTemp <= L_IpEndTemp) {
                     for (int i = 0; i < ListsUserPass.size(); i++) {
                         byte check = CHECK_LIVE(S_IpBeginTemp, ListsUserPass.get(i).getUsername(), ListsUserPass.get(i).getPassword(), id_thread);
-                        //System.out.println("ip :" + S_IpBeginTemp + " user :" + ListsUserPass.get(i).getUsername() + " pass : " + ListsUserPass.get(i).getPassword());
+                        System.out.println("ip :" + S_IpBeginTemp + " user :" + ListsUserPass.get(i).getUsername() + " pass : " + ListsUserPass.get(i).getPassword());
                         if (check == 1) {
 
                             InfoToConnectSSH info = new InfoToConnectSSH();
@@ -384,13 +384,11 @@ public class ScanSSH {
     }
 
     public void Check_ssh(Session session, int id, String pass) throws JSchException {
-       
+
         try {
             //check connect ip
             session.setPassword(pass);
             session.connect();
-
-           
 
             Bit_CheckIps[id] = true;
             NumberOfIpsLive++;
