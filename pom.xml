@@ -146,6 +146,7 @@
                 </configuration>
             </plugin>
 
+            <!--使用maven插件得到项目依赖的库文件。有的时候，想要复制到自定义的目录比如target/libs目录下，需要在pom.xml文件中添加设置覆盖默认设置-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
@@ -169,6 +170,58 @@
                     </execution>
                 </executions>
             </plugin>
+
+
+            <plugin>
+                <groupId>org.codehaus.cargo</groupId>
+                <artifactId>cargo-maven2-plugin</artifactId>
+                <version>1.4.18</version>
+                <configuration>
+                    <container>
+                        <!--tomcat类型 -->
+                        <containerId>tomcat7x</containerId>
+                        <!-- 指定tomcat路径 -->
+                        <home>D:/Program Files/Tomcat/apache-tomcat-7.0.34-windows-x64/apache-tomcat-7.0.34</home>
+                        <timeout>300000</timeout>
+                    </container>
+                    <configuration>
+                        <type>existing</type>
+                        <!--指定tomcat路径 -->
+                        <home>D:/Program Files/Tomcat/apache-tomcat-7.0.34-windows-x64/apache-tomcat-7.0.34</home>
+                    </configuration>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>cargo-start</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>start</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-maven-plugin</artifactId>
+                <!--<version>9.0.0.v20130308</version>-->
+                <version>9.2.7.v20150116</version>
+                <configuration>
+                    <scanIntervalSeconds>3</scanIntervalSeconds>
+                    <webApp>
+                        <contextPath>/</contextPath>
+                    </webApp>
+                    <httpConnector>
+                        <port>1111</port>
+                    </httpConnector>
+                    <reload>automatic</reload>
+                </configuration>
+            </plugin>
+
+
+
+
+
 
         </plugins>
     </build>
